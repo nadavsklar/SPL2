@@ -5,10 +5,6 @@ package bgu.spl.mics;
  * Write your implementation here!
  * Only private fields and methods can be added to this class.
  */
-
-/**
- * Notes
- */
 public class MessageBusImpl implements MessageBus {
 
 	@Override
