@@ -1,5 +1,7 @@
 package bgu.spl.mics;
 
+import java.util.Queue;
+
 /**
  * The MicroService is an abstract class that any micro-service in the system
  * must extend. The abstract MicroService class is responsible to get and
@@ -22,6 +24,7 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
+    private Queue<Message> listOfMessages;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -126,6 +129,7 @@ public abstract class MicroService implements Runnable {
      */
     protected abstract void initialize();
 
+
     /**
      * Signals the event loop that it must terminate after handling the current
      * message.
@@ -141,6 +145,14 @@ public abstract class MicroService implements Runnable {
     public final String getName() {
         return name;
     }
+
+    public void addEvent(Event e) {listOfMessages.add(e);}
+
+    public void addBrodcast(Broadcast b) {listOfMessages.add(b);}
+
+
+    public int numberOfEvents() {return listOfMessages.size();}
+
 
     /**
      * The entry point of the micro-service. TODO: you must complete this code
