@@ -165,8 +165,19 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
+        bus.register(this);
         initialize();
         while (!terminated) {
+            try{
+                Message message = bus.awaitMessage(this);
+                if(message instanceof Event){
+                    Future<?> result = sendEvent((Event)message);
+
+                }
+            }
+            catch (Exception e) {
+
+            }
             System.out.println("NOT IMPLEMENTED!!!"); //TODO: you should delete this line :)
         }
     }

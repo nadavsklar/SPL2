@@ -1,6 +1,8 @@
 package bgu.spl.mics;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -9,9 +11,9 @@ import java.util.*;
  */
 public class MessageBusImpl implements MessageBus {
 
-	private HashMap<Event, List<MicroService>> Events;
-	private HashMap<Broadcast, List<MicroService>> Brodcasts;
-	private HashMap<MicroService, Queue<Event>> Missions;
+	private ConcurrentHashMap<Event, List<MicroService>> Events;
+	private ConcurrentHashMap<Broadcast, List<MicroService>> Brodcasts;
+	private ConcurrentHashMap<MicroService, ConcurrentLinkedQueue<Message>> Missions;
 
 	private static class MessageBusHolder {
 		private static MessageBusImpl instance = new MessageBusImpl();
@@ -62,12 +64,12 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void register(MicroService m) {
-		Missions.put(m, new LinkedList<Event>());
+		Missions.put(m, new ConcurrentLinkedQueue<Message>());
 	}
 
 	@Override
 	public void unregister(MicroService m) {
-		Queue<Event> mEvents = Missions.get(m);
+		Queue<Message> mEvents = Missions.get(m);
 		mEvents.clear();
 		Missions.remove(m);
 		for(int i = 0; i < Events.size(); i++) {
@@ -84,13 +86,28 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public Message awaitMessage(MicroService m) throws InterruptedException {
+	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
 		// TODO Auto-generated method stub
 		//return null;
-		Queue<Event> listOfEvents = Missions.get(m);
-		while(listOfEvents.isEmpty());
-		Event toReturn =  listOfEvents.peek();
-		return toReturn;
+		try {
+			Queue<Message> listOfEvents = Missions.get(m);
+			while(listOfEvents.isEmpty());
+			if(Thread.currentThread().isInterrupted())
+				throw new InterruptedException();
+			Message toReturn =  listOfEvents.peek();
+			return toReturn;
+		}
+		catch (NullPointerException e) {
+			throw new IllegalStateException();
+		}
+
+
+
+
+
+
+
+
 	}
 
 
