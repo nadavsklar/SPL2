@@ -98,11 +98,10 @@ public class FutureTest {
     public void getTime() {
         Future<String> F = new Future<String>();
         long timeout = 20;
-        TimeUnit unit = TimeUnit.SECONDS;
-        F.get(timeout, unit);
-        assertEquals(F.get(timeout, unit), "try");
+        TimeUnit unit = TimeUnit.MILLISECONDS;
+        assertNull(F.get(timeout, unit));
         F.resolve("try");
-
+        assertEquals(F.get(timeout, unit), "try");
     }
 
 
