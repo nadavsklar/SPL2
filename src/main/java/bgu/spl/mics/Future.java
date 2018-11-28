@@ -11,12 +11,15 @@ import java.util.concurrent.TimeUnit;
  * No public constructor is allowed except for the empty constructor.
  */
 public class Future<T> {
-	
+
+	private T result;
+	private boolean isDone;
 	/**
 	 * This should be the the only public constructor in this class.
 	 */
 	public Future() {
-		//TODO: implement this
+		result = null;
+		isDone = false;
 	}
 	
 	/**
@@ -27,24 +30,24 @@ public class Future<T> {
      * @return return the result of type T if it is available, if not wait until it is available.
      * 	       
      */
-	public T get() {
-		//TODO: implement this.
-		return null;
+	public synchronized T get() {
+		while(result == null);
+		return result;
 	}
 	
 	/**
      * Resolves the result of this Future object.
      */
 	public void resolve (T result) {
-		//TODO: implement this.
+		this.result = result;
+		this.isDone = true;
 	}
 	
 	/**
      * @return true if this object has been resolved, false otherwise
      */
 	public boolean isDone() {
-		//TODO: implement this.
-		return false;
+		return isDone;
 	}
 	
 	/**
@@ -59,8 +62,16 @@ public class Future<T> {
      *         elapsed, return null.
      */
 	public T get(long timeout, TimeUnit unit) {
-		//TODO: implement this.
-		return null;
+		try{
+			while(result == null)
+				Thread.sleep(timeout);
+		}
+		catch (InterruptedException e){
+			System.out.println("An interrupted exception was caught");
+		}
+
+		return result;
+
 	}
 
 }

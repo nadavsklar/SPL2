@@ -1,5 +1,6 @@
 package bgu.spl.mics;
 
+import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -25,6 +26,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private Queue<Message> listOfMessages;
+    private MessageBusImpl bus;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -32,6 +34,8 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
         this.name = name;
+        this.listOfMessages = new LinkedList<Message>();
+        this.bus = bus.getInstance();
     }
 
     /**
@@ -57,6 +61,8 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
         //TODO: implement this.
+        bus.subscribeEvent(type, this);
+
     }
 
     /**
@@ -81,6 +87,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
         //TODO: implement this.
+        bus.subscribeBroadcast(type, this);
     }
 
     /**
@@ -97,7 +104,9 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
         //TODO: implement this.
-        return null; //TODO: delete this line :)
+        //return null; //TODO: delete this line :)
+        return bus.sendEvent(e);
+
     }
 
     /**
@@ -108,6 +117,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final void sendBroadcast(Broadcast b) {
         //TODO: implement this.
+        bus.sendBroadcast(b);
     }
 
     /**
@@ -122,6 +132,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T> void complete(Event<T> e, T result) {
         //TODO: implement this.
+        bus.complete(e, result);
     }
 
     /**
@@ -146,12 +157,6 @@ public abstract class MicroService implements Runnable {
         return name;
     }
 
-    public void addEvent(Event e) {listOfMessages.add(e);}
-
-    public void addBrodcast(Broadcast b) {listOfMessages.add(b);}
-
-
-    public int numberOfEvents() {return listOfMessages.size();}
 
 
     /**
