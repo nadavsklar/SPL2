@@ -76,7 +76,6 @@ public class InventoryTest {
             assertTrue(out.containsKey("Game Of Thrones"));
             assertEquals(50, out.get("Harry Poter").intValue());
             assertEquals(50000, out.get("Game Of Thrones").intValue());
-
         }
         catch (Exception e) {
             throw new RuntimeException("ERROR Test printInventoryToFIle");

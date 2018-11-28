@@ -21,7 +21,7 @@ public class Future<T> {
 	
 	/**
      * retrieves the result the Future object holds if it has been resolved.
-     * This is a blocking method! It waits for the computation in case it has
+     * This is a ! It waits for the computation in case it has
      * not been completed.
      * <p>
      * @return return the result of type T if it is available, if not wait until it is available.

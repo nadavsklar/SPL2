@@ -33,27 +33,27 @@ public class FutureTest {
         String result1 = "try1";
         String result2 = "try2";
         assertEquals(F.get(),result1);
-        assertNotEquals(F.get(), null);
+        assertNotNull(F.get());
         F.resolve(result1);
         assertEquals(F.get(), result1);
-        assertNotEquals(F.get(), null);
+        assertNotNull(F.get());
         F.resolve(result2);
         assertEquals(F.get(), result2);
         assertNotEquals(F.get(), result1);
-        assertNotEquals(F.get(), null);
+        assertNotNull(F.get());
 
         Future<Integer> G = new Future<Integer>();
         Integer num1 = 0;
         Integer num2 = 1;
         assertEquals(G.get(),num1);
-        assertNotEquals(G.get(), null);
+        assertNotNull(G.get());
         G.resolve(num1);
         assertEquals(G.get(), num1);
-        assertNotEquals(G.get(), null);
+        assertNotNull(G.get());
         G.resolve(num2);
         assertEquals(G.get(), num2);
         assertNotEquals(G.get(), num1);
-        assertNotEquals(G.get(), null);
+        assertNotNull(G.get());
     }
 
 
@@ -81,16 +81,16 @@ public class FutureTest {
     @Test
     public void isDone() {
         Future<String> F = new Future<String>();
-        assertEquals(F.isDone(), false);
+        assertFalse(F.isDone());
         String result = "try";
         F.resolve(result);
-        assertEquals(F.isDone(), true);
+        assertTrue(F.isDone());
 
         Future<Integer> G = new Future<Integer>();
-        assertEquals(G.isDone(), false);
+        assertFalse(G.isDone());
         Integer num = 0;
         G.resolve(num);
-        assertEquals(G.isDone(), true);
+        assertTrue(G.isDone());
 
     }
 
