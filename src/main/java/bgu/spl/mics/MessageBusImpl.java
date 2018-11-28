@@ -39,7 +39,6 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> void complete(Event<T> e, T result) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -59,8 +58,6 @@ public class MessageBusImpl implements MessageBus {
 		MicroService m = Services.get(0);
 		Missions.get(m).add(e);
 		return null;
-
-
 	}
 
 	@Override
@@ -89,9 +86,13 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		// TODO Auto-generated method stub
-		return null;
+		//return null;
+		Queue<Event> listOfEvents = Missions.get(m);
+		while(listOfEvents.isEmpty());
+		Event toReturn =  listOfEvents.peek();
+		return toReturn;
 	}
 
-	
+
 
 }
