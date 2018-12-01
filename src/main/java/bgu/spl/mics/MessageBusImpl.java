@@ -86,30 +86,22 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
-		// TODO Auto-generated method stub
-		//return null;
-		try {
-			Queue<Message> listOfEvents = Missions.get(m);
-			while(listOfEvents.isEmpty());
-			if(Thread.currentThread().isInterrupted())
-				throw new InterruptedException();
-			Message toReturn =  listOfEvents.peek();
-			return toReturn;
-		}
-		catch (NullPointerException e) {
-			throw new IllegalStateException();
-		}
-
-
-
-
-
-
-
+	public Message awaitMessage(MicroService m) throws InterruptedException {
+		synchronized (this) {
+            try {
+                Queue<Message> listOfEvents = Missions.get(m);
+                while (listOfEvents.isEmpty())
+                    wait();
+                if (Thread.currentThread().isInterrupted())
+                    throw new InterruptedException();
+                Message toReturn = listOfEvents.peek();
+                notifyAll();
+                return toReturn;
+            } catch (NullPointerException e) {
+                throw new IllegalStateException();
+            }
+        }
 
 	}
-
-
 
 }

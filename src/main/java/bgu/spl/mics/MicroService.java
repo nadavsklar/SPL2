@@ -1,7 +1,10 @@
 package bgu.spl.mics;
 
+import jdk.nashorn.internal.codegen.CompilerConstants;
+
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -25,8 +28,8 @@ public abstract class MicroService implements Runnable {
 
     private boolean terminated = false;
     private final String name;
-    private Queue<Message> listOfMessages;
     private MessageBusImpl bus;
+    private ConcurrentHashMap<Class, Callback> Callbacks;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -34,8 +37,8 @@ public abstract class MicroService implements Runnable {
      */
     public MicroService(String name) {
         this.name = name;
-        this.listOfMessages = new LinkedList<Message>();
         this.bus = bus.getInstance();
+        Callbacks = new ConcurrentHashMap<>();
     }
 
     /**
@@ -62,7 +65,7 @@ public abstract class MicroService implements Runnable {
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
         //TODO: implement this.
         bus.subscribeEvent(type, this);
-
+        Callbacks.put(type, callback);
     }
 
     /**
@@ -88,6 +91,7 @@ public abstract class MicroService implements Runnable {
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
         //TODO: implement this.
         bus.subscribeBroadcast(type, this);
+        Callbacks.put(type, callback);
     }
 
     /**
@@ -103,8 +107,6 @@ public abstract class MicroService implements Runnable {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-        //TODO: implement this.
-        //return null; //TODO: delete this line :)
         return bus.sendEvent(e);
 
     }
@@ -170,13 +172,9 @@ public abstract class MicroService implements Runnable {
         while (!terminated) {
             try{
                 Message message = bus.awaitMessage(this);
-                if(message instanceof Event){
-                    Future<?> result = sendEvent((Event)message);
-
-                }
+                Callbacks.get(message).call(message);
             }
             catch (Exception e) {
-
             }
             System.out.println("NOT IMPLEMENTED!!!"); //TODO: you should delete this line :)
         }

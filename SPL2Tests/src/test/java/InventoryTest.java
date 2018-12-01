@@ -27,6 +27,7 @@ public class InventoryTest {
 
     @Test
     public void getInstance() {
+        assertNotNull(Inventory.getInstance());
     }
 
     @Test

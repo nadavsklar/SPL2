@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.passiveObjects.*;
 
 /**
  * ResourceService is in charge of the store resources - the delivery vehicles.
