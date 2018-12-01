@@ -1,7 +1,9 @@
 package bgu.spl.mics.application.passiveObjects;
-
-import static java.lang.System.console;
-import static java.lang.System.in;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 
 /**
  * Passive data-object representing the store inventory.
@@ -15,11 +17,12 @@ import static java.lang.System.in;
  */
 public class Inventory {
 
-    private BookInventoryInfo[] inventory;
+    private HashMap<String, Integer> amountsInInventory;
+    private HashMap<String, Integer> prices;
+
 	/**
      * Retrieves the single instance of this class.
      */
-
 	private static class InventoryHolder {
 	    private static Inventory instance = new Inventory();
     }
@@ -40,15 +43,13 @@ public class Inventory {
      * 						of the inventory.
      */
 	public void load (BookInventoryInfo[ ] inventory ) {
-	    try {
-            this.inventory = new BookInventoryInfo[inventory.length];
-            for (int i = 0; i < inventory.length; i++)
-                this.inventory[i] = inventory[i];
+        this.amountsInInventory = new HashMap<>();
+        this.prices = new HashMap<>();
+        for (int i = 0; i < inventory.length; i++) {
+            this.prices.put(inventory[i].getBookTitle(), inventory[i].getPrice());
+            this.amountsInInventory.put(inventory[i].getBookTitle(), inventory[i].getAmountInInventory());
         }
-        catch (Exception e) {
-	        System.out.print("Error");
-        }
-	}
+    }
 	
 	/**
      * Attempts to take one book from the store.
@@ -59,8 +60,17 @@ public class Inventory {
      * 			second should reduce by one the number of books of the desired type.
      */
 	public OrderResult take (String book) {
-		
-		return null;
+	    try {
+            if (amountsInInventory.get(book) > 0) {
+                int oldAmount = amountsInInventory.get(book);
+                amountsInInventory.replace(book, oldAmount, oldAmount - 1);
+                return OrderResult.SUCCESSFULLY_TAKEN;
+            } else
+                return OrderResult.NOT_IN_STOCK;
+        }
+        catch (Exception e) {
+	        return null;
+        }
 	}
 	
 	
@@ -72,9 +82,15 @@ public class Inventory {
      * @return the price of the book if it is available, -1 otherwise.
      */
 	public int checkAvailabiltyAndGetPrice(String book) {
-		//TODO: Implement this
-		return -1;
-	}
+        try {
+            if (amountsInInventory.get(book) > 0)
+                return prices.get(book);
+            return -1;
+        }
+        catch (Exception e) {
+            return -1;
+        }
+    }
 	
 	/**
      * 
@@ -85,6 +101,15 @@ public class Inventory {
      * This method is called by the main method in order to generate the output.
      */
 	public void printInventoryToFile(String filename){
-		//TODO: Implement this
-	}
+		try {
+            FileOutputStream outputStream = new FileOutputStream(filename + ".ser");
+            ObjectOutputStream out = new ObjectOutputStream(outputStream);
+            out.writeObject(amountsInInventory);
+            out.close();
+            outputStream.close();
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Error printing file");
+        }
+    }
 }

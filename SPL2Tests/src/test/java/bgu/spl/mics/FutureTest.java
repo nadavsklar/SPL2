@@ -1,34 +1,22 @@
-import bgu.spl.mics.Future;
-import bgu.spl.mics.MicroService;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+package bgu.spl.mics;
+
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+class FutureTest {
 
-
-@RunWith(Arquillian.class)
-public class FutureTest {
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(bgu.spl.mics.Future.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-    }
-
-    public FutureTest(){
-    }
-
+    @org.junit.jupiter.api.Test
     @Test
-    public void get() {
+    void get() {
         Future<String> F = new Future<String>();
         String result1 = "try1";
         String result2 = "try2";
@@ -72,8 +60,8 @@ public class FutureTest {
     }
 
 
-    @Test
-    public void resolve() {
+    @org.junit.jupiter.api.Test
+    void resolve() {
         Future<String> F = new Future<String>();
         String garbage = null;
         String result1 = "try1";
@@ -118,11 +106,10 @@ public class FutureTest {
         };
         Thread t3 = new Thread(r3);
         t3.start();
-
     }
 
-    @Test
-    public void isDone() {
+    @org.junit.jupiter.api.Test
+    void isDone() {
         Future<String> F = new Future<String>();
         assertFalse(F.isDone());
         String result = "try";
@@ -134,11 +121,10 @@ public class FutureTest {
         Integer num = 0;
         G.resolve(num);
         assertTrue(G.isDone());
-
     }
 
-    @Test
-    public void getTime() {
+    @org.junit.jupiter.api.Test
+    void getTime() {
         Future<String> F = new Future<String>();
         long timeout = 20;
         TimeUnit unit = TimeUnit.MILLISECONDS;
@@ -156,9 +142,4 @@ public class FutureTest {
         Thread t1 = new Thread(r1);
         t1.start();
     }
-
-
-
-
-
 }
