@@ -31,7 +31,13 @@ public class Future<T> {
      * 	       
      */
 	public synchronized T get() {
-		while(result == null);
+		try{
+			while(result == null)
+				wait();
+		}
+		catch (InterruptedException e){
+			System.out.println("Interrupted Exception wat caught");
+		}
 		return result;
 	}
 	
@@ -41,6 +47,7 @@ public class Future<T> {
 	public void resolve (T result) {
 		this.result = result;
 		this.isDone = true;
+		notifyAll();
 	}
 	
 	/**
@@ -64,7 +71,7 @@ public class Future<T> {
 	public T get(long timeout, TimeUnit unit) {
 		try{
 			while(result == null)
-				Thread.sleep(timeout);
+				wait(timeout);
 		}
 		catch (InterruptedException e){
 			System.out.println("An interrupted exception was caught");
