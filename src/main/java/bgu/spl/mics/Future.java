@@ -68,7 +68,7 @@ public class Future<T> {
      * 	       wait for {@code timeout} TimeUnits {@code unit}. If time has
      *         elapsed, return null.
      */
-	public T get(long timeout, TimeUnit unit) {
+	public synchronized T get(long timeout, TimeUnit unit) {
 		try{
 			while(result == null)
 				wait(timeout);
@@ -76,9 +76,7 @@ public class Future<T> {
 		catch (InterruptedException e){
 			System.out.println("An interrupted exception was caught");
 		}
-
 		return result;
-
 	}
 
 }
