@@ -84,7 +84,7 @@ public class FutureTest {
             t2.join();
         }
         catch (Exception e){
-
+            e.printStackTrace();
         }
 
         Runnable r3 = new Runnable() {
@@ -117,6 +117,7 @@ public class FutureTest {
     @Test
     public void get1() {
         Future<String> F = new Future<String>();
+        Future<String> G = new Future<String>();
         long timeout = 100;
         TimeUnit unit = TimeUnit.MILLISECONDS;
         String result = "try";
@@ -156,15 +157,15 @@ public class FutureTest {
         Runnable r3 = new Runnable() {
             @Override
             public void run() {
-                assertNotNull(F.get(timeout, unit));
+                assertNotNull(G.get(timeout, unit));
             }
         };
 
         Runnable r4 = new Runnable() {
             @Override
             public void run() {
-                F.resolve(result);
-                assertEquals(F.get(timeout, unit), result);
+                G.resolve(result);
+                assertEquals(G.get(timeout, unit), result);
             }
         };
 
@@ -172,7 +173,7 @@ public class FutureTest {
         Thread t4 = new Thread(r4);
         t3.start();
         try{
-            t1.join(timeout - 50);
+            t3.join(timeout - 50);
         }
         catch (InterruptedException e){
             e.printStackTrace();
