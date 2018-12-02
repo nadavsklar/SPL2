@@ -73,8 +73,6 @@ public class Inventory {
         }
 	}
 	
-	
-	
 	/**
      * Checks if a certain book is available in the inventory.
      * <p>

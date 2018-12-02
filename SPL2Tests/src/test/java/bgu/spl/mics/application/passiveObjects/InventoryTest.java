@@ -1,20 +1,29 @@
 package bgu.spl.mics.application.passiveObjects;
 
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
+import java.awt.print.Book;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 class InventoryTest {
 
-    Inventory inventory = Inventory.getInstance();
+    Inventory inventory;
+
+    @BeforeEach
+    public void setUp() {
+        inventory = Inventory.getInstance();
+        BookInventoryInfo[] Books = new BookInventoryInfo[3];
+        Books[0] = new BookInventoryInfo("Harry Poter", 50, 0);
+        Books[1] = new BookInventoryInfo("Game Of Thrones", 50000, 100);
+        Books[2] = new BookInventoryInfo("The Hunger Games", 150, 280);
+        inventory.load(Books);
+    }
 
     @Test
     void getInstance() {
@@ -23,37 +32,26 @@ class InventoryTest {
 
     @Test
     void load() {
-        checkAvailabiltyAndGetPrice();
+        assertNotEquals(-1, inventory.checkAvailabiltyAndGetPrice("Game Of Thrones"));
+        assertNotEquals(-1, inventory.checkAvailabiltyAndGetPrice("The Hunger Games"));
     }
 
     @Test
     void take() {
-        BookInventoryInfo[] Books = new BookInventoryInfo[2];
-        Books[0] = new BookInventoryInfo("Harry Poter", 50, 0);
-        Books[1] = new BookInventoryInfo("Game Of Thrones", 50000, 2);
-        inventory.load(Books);
         assertEquals(OrderResult.SUCCESSFULLY_TAKEN, inventory.take("Game Of Thrones"));
         assertEquals(OrderResult.NOT_IN_STOCK, inventory.take("Harry Poter"));
     }
 
     @Test
     void checkAvailabiltyAndGetPrice() {
-        BookInventoryInfo[] Books = new BookInventoryInfo[2];
-        Books[0] = new BookInventoryInfo("Harry Poter", 50, 1);
-        Books[1] = new BookInventoryInfo("Game Of Thrones", 50000, 1);
-        inventory.load(Books);
-        assertEquals(50, inventory.checkAvailabiltyAndGetPrice("Harry Poter"));
+        assertEquals(150, inventory.checkAvailabiltyAndGetPrice("The Hunger Games"));
         assertEquals(50000, inventory.checkAvailabiltyAndGetPrice("Game Of Thrones"));
-        assertEquals(-1, inventory.checkAvailabiltyAndGetPrice("Titanic"));
+        assertEquals(-1, inventory.checkAvailabiltyAndGetPrice("Harry Poter"));
 
     }
 
     @Test
     void printInventoryToFile() {
-        BookInventoryInfo[] Books = new BookInventoryInfo[2];
-        Books[0] = new BookInventoryInfo("Harry Poter", 50, 100);
-        Books[1] = new BookInventoryInfo("Game Of Thrones", 50000, 500);
-        inventory.load(Books);
         String filename = "filename";
         inventory.printInventoryToFile(filename);
         try {
@@ -62,8 +60,8 @@ class InventoryTest {
             HashMap<String, Integer> out = (HashMap<String,Integer>) in.readObject();
             assertTrue(out.containsKey("Harry Poter"));
             assertTrue(out.containsKey("Game Of Thrones"));
-            assertEquals(100, out.get("Harry Poter").intValue());
-            assertEquals(500, out.get("Game Of Thrones").intValue());
+            assertEquals(0, out.get("Harry Poter").intValue());
+            assertEquals(100, out.get("Game Of Thrones").intValue());
         }
         catch (Exception e) {
             throw new RuntimeException("ERROR Test printInventoryToFIle");
