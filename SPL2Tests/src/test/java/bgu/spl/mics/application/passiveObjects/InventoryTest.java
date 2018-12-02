@@ -1,22 +1,19 @@
 package bgu.spl.mics.application.passiveObjects;
 
 import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.awt.print.Book;
+import org.junit.Test;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
-class InventoryTest {
+public class InventoryTest {
 
     Inventory inventory;
 
-    @BeforeEach
-    public void setUp() {
+    @Before
+    public void setUp() throws Exception {
         inventory = Inventory.getInstance();
         BookInventoryInfo[] Books = new BookInventoryInfo[3];
         Books[0] = new BookInventoryInfo("Harry Poter", 50, 0);
@@ -26,32 +23,31 @@ class InventoryTest {
     }
 
     @Test
-    void getInstance() {
+    public void getInstance() {
         assertNotNull(Inventory.getInstance());
     }
 
     @Test
-    void load() {
+    public void load() {
         assertNotEquals(-1, inventory.checkAvailabiltyAndGetPrice("Game Of Thrones"));
         assertNotEquals(-1, inventory.checkAvailabiltyAndGetPrice("The Hunger Games"));
     }
 
     @Test
-    void take() {
+    public void take() {
         assertEquals(OrderResult.SUCCESSFULLY_TAKEN, inventory.take("Game Of Thrones"));
         assertEquals(OrderResult.NOT_IN_STOCK, inventory.take("Harry Poter"));
     }
 
     @Test
-    void checkAvailabiltyAndGetPrice() {
+    public void checkAvailabiltyAndGetPrice() {
         assertEquals(150, inventory.checkAvailabiltyAndGetPrice("The Hunger Games"));
         assertEquals(50000, inventory.checkAvailabiltyAndGetPrice("Game Of Thrones"));
         assertEquals(-1, inventory.checkAvailabiltyAndGetPrice("Harry Poter"));
-
     }
 
     @Test
-    void printInventoryToFile() {
+    public void printInventoryToFile() {
         String filename = "filename";
         inventory.printInventoryToFile(filename);
         try {

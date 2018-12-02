@@ -4,18 +4,12 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-class FutureTest {
+public class FutureTest {
 
-    @org.junit.jupiter.api.Test
     @Test
-    void get() {
+    public void get() {
         Future<String> F = new Future<String>();
         String result1 = "try1";
         String result2 = "try2";
@@ -58,9 +52,8 @@ class FutureTest {
         t3.start();
     }
 
-
-    @org.junit.jupiter.api.Test
-    void resolve() {
+    @Test
+    public void resolve() {
         Future<String> F = new Future<String>();
         String garbage = null;
         String result1 = "try1";
@@ -107,8 +100,8 @@ class FutureTest {
         t3.start();
     }
 
-    @org.junit.jupiter.api.Test
-    void isDone() {
+    @Test
+    public void isDone() {
         Future<String> F = new Future<String>();
         assertFalse(F.isDone());
         String result = "try";
@@ -122,8 +115,8 @@ class FutureTest {
         assertTrue(G.isDone());
     }
 
-    @org.junit.jupiter.api.Test
-    void getTime() {
+    @Test
+    public void get1() {
         Future<String> F = new Future<String>();
         long timeout = 20;
         TimeUnit unit = TimeUnit.MILLISECONDS;
