@@ -70,7 +70,7 @@ public class Future<T> {
      */
 	public synchronized T get(long timeout, TimeUnit unit) {
 		try{
-			while(result == null)
+			if(result == null)
 				wait(timeout);
 		}
 		catch (InterruptedException e){

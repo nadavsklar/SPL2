@@ -25,8 +25,6 @@ public class FutureTest {
             @Override
             public void run() {
                 F.resolve(result1);
-                assertEquals(F.get(), result1);
-                assertNotNull(F.get());
             }
         };
         Thread t1 = new Thread(r1);
@@ -37,8 +35,8 @@ public class FutureTest {
             t1.join();
             t2.join();
         }
-        catch (Exception e){
-
+        catch (InterruptedException e){
+            e.printStackTrace();
         }
         Runnable r3 = new Runnable() {
             @Override
@@ -119,20 +117,69 @@ public class FutureTest {
     @Test
     public void get1() {
         Future<String> F = new Future<String>();
-        long timeout = 20;
+        long timeout = 100;
         TimeUnit unit = TimeUnit.MILLISECONDS;
         String result = "try";
-
         Runnable r1 = new Runnable() {
             @Override
             public void run() {
-                assertNull(F.get(timeout, unit),result);
-                F.resolve(result);
-                assertEquals(F.get(timeout, unit),result);
+                assertNull(F.get(timeout, unit));
             }
         };
 
+        Runnable r2 = new Runnable() {
+            @Override
+            public void run() {
+                F.resolve(result);
+                assertEquals(F.get(timeout, unit), result);
+            }
+        };
         Thread t1 = new Thread(r1);
+        Thread t2 = new Thread(r2);
         t1.start();
+        try{
+            t1.join(timeout + 100);
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        t2.start();
+
+        try{
+            t1.join();
+            t2.join();
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
+        Runnable r3 = new Runnable() {
+            @Override
+            public void run() {
+                assertNotNull(F.get(timeout, unit));
+            }
+        };
+
+        Runnable r4 = new Runnable() {
+            @Override
+            public void run() {
+                F.resolve(result);
+                assertEquals(F.get(timeout, unit), result);
+            }
+        };
+
+        Thread t3 = new Thread(r3);
+        Thread t4 = new Thread(r4);
+        t3.start();
+        try{
+            t1.join(timeout - 50);
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        t4.start();
+
+
+
     }
 }
