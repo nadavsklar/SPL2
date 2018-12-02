@@ -2,6 +2,7 @@ package bgu.spl.mics.application.passiveObjects;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
