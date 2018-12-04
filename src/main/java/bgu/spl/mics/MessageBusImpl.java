@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class MessageBusImpl implements MessageBus {
 
+	private ConcurrentHashMap<Event, Future> Results;
 	private ConcurrentHashMap<Event, List<MicroService>> Events;
 	private ConcurrentHashMap<Broadcast, List<MicroService>> Brodcasts;
 	private ConcurrentHashMap<MicroService, ConcurrentLinkedQueue<Message>> Missions;
@@ -19,9 +20,8 @@ public class MessageBusImpl implements MessageBus {
 		private static MessageBusImpl instance = new MessageBusImpl();
 	}
 
-	private MessageBusImpl() {
+	private MessageBusImpl() {}
 
-	}
 
 	public static MessageBusImpl getInstance() {
 		return MessageBusHolder.instance;
@@ -41,12 +41,14 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> void complete(Event<T> e, T result) {
 		// TODO Auto-generated method stub
+		Future<T> F = Results.get(e);
+		F.resolve(result);
 	}
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
 		// TODO Auto-generated method stub
-		List<MicroService> Services = Events.get(b);
+		List<MicroService> Services = Brodcasts.get(b);
 		for (MicroService m : Services){
 			//m.something
 		}
@@ -59,7 +61,7 @@ public class MessageBusImpl implements MessageBus {
 		List<MicroService> Services = Events.get(e);
 		MicroService m = Services.get(0);
 		Missions.get(m).add(e);
-		return null;
+		return Results.get(e);
 	}
 
 	@Override
