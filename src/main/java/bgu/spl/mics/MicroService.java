@@ -24,7 +24,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private MessageBusImpl bus;
-    private ConcurrentHashMap<Class, Callback> Callbacks;
+    private ConcurrentHashMap<Class<? extends Message>, Callback> Callbacks;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -60,6 +60,7 @@ public abstract class MicroService implements Runnable {
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
         //TODO: implement this.
         bus.subscribeEvent(type, this);
+        System.out.println(type + "          " + type.getClass());
         Callbacks.put(type, callback);
     }
 
@@ -152,7 +153,6 @@ public abstract class MicroService implements Runnable {
     }
 
 
-
     /**
      * The entry point of the micro-service. TODO: you must complete this code
      * otherwise you will end up in an infinite loop.
@@ -164,7 +164,7 @@ public abstract class MicroService implements Runnable {
         while (!terminated) {
             try{
                 Message message = bus.awaitMessage(this);
-                Callbacks.get(message).call(message);
+                Callbacks.get(message.getClass()).call(message);
             }
             catch (Exception e) {
                 e.printStackTrace();
