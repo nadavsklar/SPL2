@@ -103,7 +103,6 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
         return bus.sendEvent(e);
-
     }
 
     /**
@@ -113,7 +112,6 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-        //TODO: implement this.
         bus.sendBroadcast(b);
     }
 
@@ -128,7 +126,6 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-        //TODO: implement this.
         bus.complete(e, result);
     }
 
@@ -170,8 +167,8 @@ public abstract class MicroService implements Runnable {
                 Callbacks.get(message).call(message);
             }
             catch (Exception e) {
+                e.printStackTrace();
             }
-            System.out.println("NOT IMPLEMENTED!!!"); //TODO: you should delete this line :)
         }
     }
 

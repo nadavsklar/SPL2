@@ -12,15 +12,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class MessageBusImpl implements MessageBus {
 
 	private ConcurrentHashMap<Event, Future> Results;
-	private ConcurrentHashMap<Event, List<MicroService>> Events;
-	private ConcurrentHashMap<Broadcast, List<MicroService>> Brodcasts;
+	private ConcurrentHashMap<Class<? extends Event>, List<MicroService>> Events;
+	private ConcurrentHashMap<Class<? extends Broadcast>, List<MicroService>> Brodcasts;
 	private ConcurrentHashMap<MicroService, ConcurrentLinkedQueue<Message>> Missions;
+	private int roundRobinIndex;
 
 	private static class MessageBusHolder {
 		private static MessageBusImpl instance = new MessageBusImpl();
 	}
 
-	private MessageBusImpl() {}
+	private MessageBusImpl() {
+		Results = new ConcurrentHashMap<>();
+		Events = new ConcurrentHashMap<>();
+        Brodcasts = new ConcurrentHashMap<>();
+        Missions = new ConcurrentHashMap<>();
+        roundRobinIndex = 0;
+	}
 
 
 	public static MessageBusImpl getInstance() {
@@ -29,13 +36,19 @@ public class MessageBusImpl implements MessageBus {
 
 
 	@Override
-	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+	public synchronized <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+	    if (!Events.containsKey(type))
+	        Events.put(type, new LinkedList<>());
 		Events.get(type).add(m);
+		notifyAll();
 	}
 
 	@Override
-	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		Brodcasts.get(type).add(m);
+	public synchronized void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
+	    if (!Brodcasts.containsKey(type))
+            Brodcasts.put(type, new LinkedList<>());
+	    Brodcasts.get(type).add(m);
+	    notifyAll();
 	}
 
 	@Override
@@ -43,30 +56,49 @@ public class MessageBusImpl implements MessageBus {
 		// TODO Auto-generated method stub
 		Future<T> F = Results.get(e);
 		F.resolve(result);
+		Results.remove(e);
 	}
 
 	@Override
-	public void sendBroadcast(Broadcast b) {
-		// TODO Auto-generated method stub
-		List<MicroService> Services = Brodcasts.get(b);
-		for (MicroService m : Services){
-			//m.something
-		}
+	public synchronized void sendBroadcast(Broadcast b) {
+	    try {
+	        while (!Brodcasts.containsKey(b.getClass()))
+                wait();
+        }
+        catch (InterruptedException ie) {
+	        ie.printStackTrace();
+        }
+		List<MicroService> Services = Brodcasts.get(b.getClass());
+		for (MicroService m : Services)
+			Missions.get(m).add(b);
+		notifyAll();
 	}
 
 	
 	@Override
-	public <T> Future<T> sendEvent(Event<T> e) {
+	public synchronized <T> Future<T> sendEvent(Event<T> e) {
 		// TODO Auto-generated method stub
-		List<MicroService> Services = Events.get(e);
-		MicroService m = Services.get(0);
+        try {
+            while (!Events.containsKey(e.getClass()))
+                wait();
+        }
+        catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
+		List<MicroService> Services = Events.get(e.getClass());
+        if (roundRobinIndex >= Services.size())
+            roundRobinIndex = 0;
+		MicroService m = Services.get(roundRobinIndex);
+		roundRobinIndex++;
 		Missions.get(m).add(e);
+		Results.put(e, new Future());
+		notifyAll();
 		return Results.get(e);
 	}
 
 	@Override
 	public void register(MicroService m) {
-		Missions.put(m, new ConcurrentLinkedQueue<Message>());
+		Missions.put(m, new ConcurrentLinkedQueue<>());
 	}
 
 	@Override
@@ -88,22 +120,17 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public Message awaitMessage(MicroService m) throws InterruptedException {
-		synchronized (this) {
-            try {
-                Queue<Message> listOfEvents = Missions.get(m);
-                while (listOfEvents.isEmpty())
-                    wait();
-                if (Thread.currentThread().isInterrupted())
-                    throw new InterruptedException();
-                Message toReturn = listOfEvents.peek();
-                notifyAll();
-                return toReturn;
-            } catch (NullPointerException e) {
-                throw new IllegalStateException();
-            }
+	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
+	    try {
+            Queue<Message> listOfEvents = Missions.get(m);
+            while (listOfEvents.isEmpty())
+                wait();
+            Message toReturn = listOfEvents.poll();
+            notifyAll();
+            return toReturn;
         }
-
+        catch (InterruptedException ie) {
+	        throw new InterruptedException();
+	    }
 	}
-
 }
