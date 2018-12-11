@@ -60,7 +60,7 @@ public abstract class MicroService implements Runnable {
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
         //TODO: implement this.
         bus.subscribeEvent(type, this);
-        System.out.println(type + "          " + type.getClass());
+        //System.out.println(type + "          " + type.getClass());
         Callbacks.put(type, callback);
     }
 

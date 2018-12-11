@@ -1,5 +1,4 @@
 package bgu.spl.mics;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -40,7 +39,8 @@ public class MessageBusImpl implements MessageBus {
 	    if (!Events.containsKey(type))
 	        Events.put(type, new LinkedList<>());
 		Events.get(type).add(m);
-		notifyAll();
+		//notifyAll();
+		//System.out.println("NOTIFIED! - subscribe event " + m.toString() + " type : " + type.toString());
 	}
 
 	@Override
@@ -48,8 +48,9 @@ public class MessageBusImpl implements MessageBus {
 	    if (!Brodcasts.containsKey(type))
             Brodcasts.put(type, new LinkedList<>());
 	    Brodcasts.get(type).add(m);
-	    notifyAll();
-	}
+	    //notifyAll();
+        //System.out.println("NOTIFIED! - subscribe broadcast " + m.toString() + " type : " + type.toString());
+    }
 
 	@Override
 	public <T> void complete(Event<T> e, T result) {
@@ -62,8 +63,10 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public synchronized void sendBroadcast(Broadcast b) {
 	    try {
-	        while (!Brodcasts.containsKey(b.getClass()))
+	        while (!Brodcasts.containsKey(b.getClass())) {
+	            //System.out.println(" WAIT send broadcast  " + b.toString());
                 wait();
+            }
         }
         catch (InterruptedException ie) {
 	        ie.printStackTrace();
@@ -72,6 +75,7 @@ public class MessageBusImpl implements MessageBus {
 		for (MicroService m : Services)
 			Missions.get(m).add(b);
 		notifyAll();
+		//System.out.println(" NOTIFIED send broadcast " + b.toString());
 	}
 
 	
@@ -79,8 +83,10 @@ public class MessageBusImpl implements MessageBus {
 	public synchronized <T> Future<T> sendEvent(Event<T> e) {
 		// TODO Auto-generated method stub
         try {
-            while (!Events.containsKey(e.getClass()))
+            while (!Events.containsKey(e.getClass())) {
+                //System.out.println(" WAIT send event  " + e.toString());
                 wait();
+            }
         }
         catch (InterruptedException ie) {
             ie.printStackTrace();
@@ -93,12 +99,14 @@ public class MessageBusImpl implements MessageBus {
 		Missions.get(m).add(e);
 		Results.put(e, new Future());
 		notifyAll();
+		//System.out.println(" NOTIFIED send event   " + e.toString());
 		return Results.get(e);
 	}
 
 	@Override
 	public void register(MicroService m) {
 		Missions.put(m, new ConcurrentLinkedQueue<>());
+		//System.out.println(m.toString() + " has registered");
 	}
 
 	@Override
