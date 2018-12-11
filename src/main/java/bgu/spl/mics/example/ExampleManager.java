@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
+//I can do commits?//
 public class ExampleManager {
 
     public static void main(String[] args) {
