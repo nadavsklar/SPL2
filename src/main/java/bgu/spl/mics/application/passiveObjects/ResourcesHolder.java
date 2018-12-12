@@ -72,7 +72,7 @@ public class ResourcesHolder {
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
 		sem.release(1);
-		Vehicles.replace(vehicle, false);
+		Vehicles.replace(vehicle, true);
 	}
 	
 	/**
@@ -81,6 +81,7 @@ public class ResourcesHolder {
      * @param vehicles	Array of {@link DeliveryVehicle} instances to store.
      */
 	public void load(DeliveryVehicle[] vehicles) {
+		Vehicles.clear();
 		for(int i = 0; i < vehicles.length; i++)
 			Vehicles.put(vehicles[i], true);
 		sem = new Semaphore(vehicles.length);
