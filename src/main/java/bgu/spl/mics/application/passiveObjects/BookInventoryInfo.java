@@ -17,7 +17,7 @@ public class BookInventoryInfo {
 	    this.price = price;
     }
 
-    public BookInventoryInfo(String BookTitle, int price, int amountInInventory) {
+    public BookInventoryInfo(String BookTitle, int amountInInventory, int price) {
         this.BookTitle = BookTitle;
         this.price = price;
         this.amountInInventory = amountInInventory;
