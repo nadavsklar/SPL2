@@ -28,7 +28,8 @@ public class Inventory {
     }
 
     private Inventory() {
-
+        amountsInInventory = new HashMap<>();
+        prices = new HashMap<>();
     }
 
 	public static Inventory getInstance() {
@@ -99,15 +100,6 @@ public class Inventory {
      * This method is called by the main method in order to generate the output.
      */
 	public void printInventoryToFile(String filename){
-		try {
-            FileOutputStream outputStream = new FileOutputStream(filename + ".ser");
-            ObjectOutputStream out = new ObjectOutputStream(outputStream);
-            out.writeObject(amountsInInventory);
-            out.close();
-            outputStream.close();
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Error printing file");
-        }
+		Printer.SerializablePrinter(amountsInInventory, filename);
     }
 }

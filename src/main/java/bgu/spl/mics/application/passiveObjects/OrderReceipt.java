@@ -16,22 +16,27 @@ public class OrderReceipt {
 	private int price;
 	private int issuedTick; //tick in which the receipt was issued
 	private int orderTick; //tick in which the customer ordered the book
-	private int proccessTick; ////tick in which the selling service started processing the order
+	private int proccesTick; ////tick in which the selling service started processing the order
 
+	public OrderReceipt(int orderId, String seller, int customerId, String bookTitle, int price){
+		this.orderId = orderId;
+		this.seller = seller;
+		this.customerId = customerId;
+		this.bookTitle = bookTitle;
+		this.price = price;
+	}
 	/**
      * Retrieves the orderId of this receipt.
      */
 	public int getOrderId() {
-		// TODO Implement this
-		return 0;
+		return orderId;
 	}
 	
 	/**
      * Retrieves the name of the selling service which handled the order.
      */
 	public String getSeller() {
-		// TODO Implement this
-		return null;
+		return seller;
 	}
 	
 	/**
@@ -40,48 +45,74 @@ public class OrderReceipt {
      * @return the ID of the customer
      */
 	public int getCustomerId() {
-		// TODO Implement this
-		return 0;
+		return customerId;
 	}
 	
 	/**
      * Retrieves the name of the book which was bought.
      */
 	public String getBookTitle() {
-		// TODO Implement this
-		return null;
+		return bookTitle;
 	}
 	
 	/**
      * Retrieves the price the customer paid for the book.
      */
 	public int getPrice() {
-		// TODO Implement this
-		return 0;
+		return price;
 	}
 	
 	/**
      * Retrieves the tick in which this receipt was issued.
      */
 	public int getIssuedTick() {
-		// TODO Implement this
-		return 0;
+		return issuedTick;
 	}
 	
 	/**
      * Retrieves the tick in which the customer sent the purchase request.
      */
 	public int getOrderTick() {
-		// TODO Implement this
-		return 0;
+		return orderTick;
 	}
 	
 	/**
      * Retrieves the tick in which the treating selling service started 
      * processing the order.
      */
-	public int getProcessTick() {
-		// TODO Implement this
-		return 0;
+	public int getProccessTick() {
+		return proccesTick;
+	}
+
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
+
+	public void setSeller(String seller) {
+		this.seller = seller;
+	}
+
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
+	}
+
+	public void setBookTitle(String bookTitle) {
+		this.bookTitle = bookTitle;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	public void setIssuedTick(int issuedTick) {
+		this.issuedTick = issuedTick;
+	}
+
+	public void setOrderTick(int orderTick) {
+		this.orderTick = orderTick;
+	}
+
+	public void setProccesTick(int proccesTick) {
+		this.proccesTick = proccesTick;
 	}
 }

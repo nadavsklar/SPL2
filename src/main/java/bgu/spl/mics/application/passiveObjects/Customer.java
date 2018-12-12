@@ -17,6 +17,16 @@ public class Customer {
 	private List<OrderReceipt> Receipts;
 	private int creditCard;
 	private int availableAmountInCreditCard;
+
+	public Customer(int id, String name, String address, int distance, List<OrderReceipt> Receipts, int creditCard, int availableAmountInCreditCard){
+		this.id = id;
+		this.name = name;
+		this.address = address;
+		this.distance = distance;
+		this.Receipts = Receipts;
+		this.creditCard = creditCard;
+		this.availableAmountInCreditCard = availableAmountInCreditCard;
+	}
 	/**
      * Retrieves the name of the customer.
      */
@@ -69,6 +79,10 @@ public class Customer {
      */
 	public int getCreditNumber() {
 		return creditCard;
+	}
+
+	public void setAvailableAmountInCreditCard(int toCharge){
+		availableAmountInCreditCard = availableAmountInCreditCard - toCharge;
 	}
 	
 }

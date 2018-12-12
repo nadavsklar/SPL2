@@ -40,6 +40,11 @@ public class DeliveryVehicle {
      * @param distance	The distance from the store to the customer.
      */
 	public void deliver(String address, int distance) {
-		// TODO Implement this
+		try {
+			Thread.currentThread().sleep(distance * speed);
+		}
+		catch (InterruptedException ie){
+			ie.printStackTrace();
+		}
 	}
 }
