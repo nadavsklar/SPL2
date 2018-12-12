@@ -2,7 +2,9 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BookOrderEvent;
+import bgu.spl.mics.application.passiveObjects.Customer;
 import bgu.spl.mics.application.passiveObjects.MoneyRegister;
+import bgu.spl.mics.application.passiveObjects.*;
 
 /**
  * Selling service in charge of taking orders from customers.
@@ -16,16 +18,22 @@ import bgu.spl.mics.application.passiveObjects.MoneyRegister;
  */
 public class SellingService extends MicroService{
 
-	private MoneyRegister moneyRegister;
+	private MoneyRegister MoneyRegister;
 
 	public SellingService() {
 		super("Change_This_Name");
+		MoneyRegister = MoneyRegister.getInstance();
 	}
+
+
 
 	@Override
 	protected void initialize() {
 		subscribeEvent(BookOrderEvent.class, message ->{
-			moneyRegister.
+			//Create Receipt
+			MoneyRegister.file(message.getReceipt());
+			MoneyRegister.chargeCreditCard(message.getCustomer(), message.getReceipt().getPrice());
+			complete(message, MoneyRegister.getTotalEarnings());
 		});
 		
 	}

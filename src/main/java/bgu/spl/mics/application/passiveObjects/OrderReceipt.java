@@ -25,6 +25,8 @@ public class OrderReceipt {
 		this.bookTitle = bookTitle;
 		this.price = price;
 	}
+
+	public OrderReceipt(){}
 	/**
      * Retrieves the orderId of this receipt.
      */

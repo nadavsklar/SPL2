@@ -4,6 +4,7 @@ import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BookOrderEvent;
 import bgu.spl.mics.application.messages.TickBroadcast;
+import bgu.spl.mics.application.passiveObjects.OrderReceipt;
 
 import java.util.Vector;
 
@@ -30,7 +31,9 @@ public class APIService extends MicroService{
 		subscribeBroadcast(TickBroadcast.class, message -> {
 
 		});
-		Future<> sendEvent(Orders.elementAt(0));
+
+		Future<OrderReceipt> Order = sendEvent(Orders.firstElement());
+
 	}
 
 }
