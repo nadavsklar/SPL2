@@ -38,7 +38,7 @@ public class APIService extends MicroService{
 		    Vector<OrderReceipt> currentReceipts = new Vector<>();
 		    for (BookOrderEvent bookOrderEvent : Orders.keySet()) {
 		        if (currentTimeTick.equals(Orders.get(bookOrderEvent))) {
-		            OrderReceipt currentResult = OrderReceipt)sendEvent(bookOrderEvent).get();
+		            OrderReceipt currentResult = (OrderReceipt)sendEvent(bookOrderEvent).get();
 		            if (currentResult != null) {
                         currentReceipts.add(currentResult);
                         // TIME TICK
