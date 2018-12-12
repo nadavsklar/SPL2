@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.CheckAvailabilityVehicle;
 import bgu.spl.mics.application.passiveObjects.*;
 
 /**
@@ -14,14 +16,19 @@ import bgu.spl.mics.application.passiveObjects.*;
  */
 public class ResourceService extends MicroService{
 
+	private ResourcesHolder Resources;
+
 	public ResourceService() {
 		super("Change_This_Name");
-		// TODO Implement this
+		Resources = ResourcesHolder.getInstance();
 	}
 
 	@Override
 	protected void initialize() {
-		// TODO Implement this
+		subscribeEvent(CheckAvailabilityVehicle.class, message ->{
+			DeliveryVehicle Vehicle = Resources.acquireVehicle().get();
+			complete(message, Vehicle);
+		});
 		
 	}
 
