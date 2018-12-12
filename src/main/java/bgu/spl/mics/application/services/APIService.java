@@ -1,12 +1,16 @@
 package bgu.spl.mics.application.services;
 
-import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BookOrderEvent;
+import bgu.spl.mics.application.messages.DeliveryEvent;
 import bgu.spl.mics.application.messages.TickBroadcast;
+import bgu.spl.mics.application.passiveObjects.Inventory;
+import bgu.spl.mics.application.passiveObjects.MoneyRegister;
 import bgu.spl.mics.application.passiveObjects.OrderReceipt;
+import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * APIService is in charge of the connection between a client and the store.
@@ -20,8 +24,9 @@ import java.util.Vector;
 
 public class APIService extends MicroService{
 
-	private Vector<BookOrderEvent> Orders;
-	public APIService(String name, Vector<BookOrderEvent> Orders) {
+	private ConcurrentHashMap<BookOrderEvent, Integer> Orders;
+
+	public APIService(String name, ConcurrentHashMap<BookOrderEvent, Integer> Orders) {
 		super(name);
 		this.Orders = Orders;
 	}
@@ -29,11 +34,23 @@ public class APIService extends MicroService{
 	@Override
 	protected void initialize() {
 		subscribeBroadcast(TickBroadcast.class, message -> {
+		    Integer currentTimeTick = message.getCurrentTick();
+		    Vector<OrderReceipt> currentReceipts = new Vector<>();
+		    for (BookOrderEvent bookOrderEvent : Orders.keySet()) {
+		        if (currentTimeTick.equals(Orders.get(bookOrderEvent))) {
+		            OrderReceipt currentResult = OrderReceipt)sendEvent(bookOrderEvent).get();
+		            if (currentResult != null) {
+                        currentReceipts.add(currentResult);
+                        // TIME TICK
+                        String address = bookOrderEvent.getCustomer().getAddress();
+                        int distance = bookOrderEvent.getCustomer().getDistance();
+                        sendEvent(new DeliveryEvent(address, distance));
+
+                    }
+                }
+            }
 
 		});
-
-		Future<OrderReceipt> Order = sendEvent(Orders.firstElement());
-
 	}
 
 }
