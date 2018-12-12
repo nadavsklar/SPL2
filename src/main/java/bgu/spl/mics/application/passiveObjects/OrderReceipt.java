@@ -8,7 +8,16 @@ package bgu.spl.mics.application.passiveObjects;
  * You may add fields and methods to this class as you see fit (including public methods).
  */
 public class OrderReceipt {
-	
+
+	private int orderId;
+	private String seller;
+	private int customerId;
+	private String bookTitle;
+	private int price;
+	private int issuedTick; //tick in which the receipt was issued
+	private int orderTick; //tick in which the customer ordered the book
+	private int proccessTick; ////tick in which the selling service started processing the order
+
 	/**
      * Retrieves the orderId of this receipt.
      */

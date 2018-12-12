@@ -2,6 +2,9 @@ package bgu.spl.mics.application.passiveObjects;
 
 import bgu.spl.mics.Future;
 
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Passive object representing the resource manager.
  * You must not alter any of the given public methods of this class.
@@ -12,13 +15,23 @@ import bgu.spl.mics.Future;
  * You can add ONLY private methods and fields to this class.
  */
 public class ResourcesHolder {
-	
+
+	private ConcurrentHashMap<DeliveryVehicle, Boolean> Vehicles;
+
+
 	/**
      * Retrieves the single instance of this class.
      */
+	private static class ResourcesHolderInstance {
+		private static ResourcesHolder instance = new ResourcesHolder();
+	}
+
+	private ResourcesHolder() {
+	}
+
+
 	public static ResourcesHolder getInstance() {
-		//TODO: Implement this
-		return null;
+		return ResourcesHolderInstance.instance;
 	}
 	
 	/**
