@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Passive data-object representing a customer of the store.
@@ -14,11 +15,11 @@ public class Customer {
 	private String name;
 	private String address;
 	private int distance;
-	private List<OrderReceipt> Receipts;
+	private Vector<OrderReceipt> Receipts;
 	private int creditCard;
 	private int availableAmountInCreditCard;
 
-	public Customer(int id, String name, String address, int distance, List<OrderReceipt> Receipts, int creditCard, int availableAmountInCreditCard){
+	public Customer(int id, String name, String address, int distance, Vector<OrderReceipt> Receipts, int creditCard, int availableAmountInCreditCard){
 		this.id = id;
 		this.name = name;
 		this.address = address;
@@ -61,7 +62,7 @@ public class Customer {
      * <p>
      * @return A list of receipts.
      */
-	public List<OrderReceipt> getCustomerReceiptList() {
+	public Vector<OrderReceipt> getCustomerReceiptList() {
 		return Receipts;
 	}
 	

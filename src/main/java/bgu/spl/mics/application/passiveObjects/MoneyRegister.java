@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Passive object representing the store finance management. 
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class MoneyRegister {
 
-	private List<OrderReceipt> Receipts;
+	private Vector<OrderReceipt> Receipts;
 	private int totalEarnings;
 
 	/**
@@ -29,7 +30,7 @@ public class MoneyRegister {
 	}
 
 	private MoneyRegister() {
-		Receipts = new LinkedList<>();
+		Receipts = new Vector<>();
 		totalEarnings = 0;
 	}
 

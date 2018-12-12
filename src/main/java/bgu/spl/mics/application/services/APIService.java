@@ -1,27 +1,36 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.BookOrderEvent;
+import bgu.spl.mics.application.messages.TickBroadcast;
+
+import java.util.Vector;
 
 /**
  * APIService is in charge of the connection between a client and the store.
  * It informs the store about desired purchases using {@link BookOrderEvent}.
  * This class may not hold references for objects which it is not responsible for:
  * {@link ResourcesHolder}, {@link MoneyRegister}, {@link Inventory}.
- * 
+ *
  * You can add private fields and public methods to this class.
  * You MAY change constructor signatures and even add new public constructors.
  */
+
 public class APIService extends MicroService{
 
-	public APIService() {
+	private Vector<BookOrderEvent> Orders;
+	public APIService(Vector<BookOrderEvent> Orders) {
 		super("Change_This_Name");
-		// TODO Implement this
+		this.Orders = Orders;
 	}
 
 	@Override
 	protected void initialize() {
-		// TODO Implement this
-		
+		subscribeBroadcast(TickBroadcast.class, message -> {
+
+		});
+		Future<> sendEvent(Orders.elementAt(0));
 	}
 
 }
