@@ -20,11 +20,7 @@ public class BookOrderEvent implements Event {
         return Customer;
     }
 
-    public OrderReceipt getReceipt(){
-        OrderReceipt Order = new OrderReceipt();
-        Order.setBookTitle(BookTitle);
-        Order.setCustomerId(Customer.getId());
-        //Still to implement//
-        return Order;
-    }
+    public String getBookTitle() { return this.BookTitle; }
+
+    public int getTimeTick() { return timeTick; }
 }

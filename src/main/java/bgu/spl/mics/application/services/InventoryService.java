@@ -1,9 +1,11 @@
 package bgu.spl.mics.application.services;
 import bgu.spl.mics.Future;
-import bgu.spl.mics.MessageBus;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.CheckAvailabilityBook;
+import bgu.spl.mics.application.messages.TakeBook;
 import bgu.spl.mics.application.passiveObjects.Inventory;
 import bgu.spl.mics.application.passiveObjects.MoneyRegister;
+import bgu.spl.mics.application.passiveObjects.OrderResult;
 import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 
 /**
@@ -19,7 +21,6 @@ import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 public class InventoryService extends MicroService{
 
 	private Inventory inventory;
-    //take, check avalability and get price
 
 	public InventoryService(String name) {
 		super(name);
@@ -28,6 +29,16 @@ public class InventoryService extends MicroService{
 
 	@Override
 	protected void initialize() {
+
+	    subscribeEvent(CheckAvailabilityBook.class, iv -> {
+	        int price = inventory.checkAvailabiltyAndGetPrice(iv.getBook());
+	        complete(iv, price);
+        });
+
+        subscribeEvent(TakeBook.class, iv -> {
+            OrderResult result = inventory.take(iv.getBook());
+            complete(iv, result);
+        });
 
 	}
 

@@ -1,8 +1,10 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BookOrderEvent;
-import bgu.spl.mics.application.passiveObjects.Customer;
+import bgu.spl.mics.application.messages.CheckAvailabilityBook;
+import bgu.spl.mics.application.messages.TakeBook;
 import bgu.spl.mics.application.passiveObjects.MoneyRegister;
 import bgu.spl.mics.application.passiveObjects.*;
 
@@ -20,8 +22,8 @@ public class SellingService extends MicroService{
 
 	private MoneyRegister MoneyRegister;
 
-	public SellingService() {
-		super("Change_This_Name");
+	public SellingService(String name) {
+		super(name);
 		MoneyRegister = MoneyRegister.getInstance();
 	}
 
@@ -29,11 +31,29 @@ public class SellingService extends MicroService{
 
 	@Override
 	protected void initialize() {
+
 		subscribeEvent(BookOrderEvent.class, message ->{
-			//Create Receipt
-			MoneyRegister.file(message.getReceipt());
-			MoneyRegister.chargeCreditCard(message.getCustomer(), message.getReceipt().getPrice());
-			complete(message, MoneyRegister.getTotalEarnings());
+            OrderReceipt receipt = new OrderReceipt();
+            //receipt.setOrderTick(message.getTimeTick());
+            //receipt.setProccesTick();
+
+            Future<Integer> price = sendEvent(new CheckAvailabilityBook(message.getBookTitle()));
+
+			if (price.get() >= 0 && message.getCustomer().getAvailableCreditAmount() >= price.get()) {
+                    sendEvent(new TakeBook(message.getBookTitle()));
+                    receipt.setBookTitle(message.getBookTitle());
+                    receipt.setCustomerId(message.getCustomer().getId());
+                    receipt.setPrice(price.get());
+                    receipt.setSeller(getName());
+                    receipt.setOrderId(OrdersId.getCurrentOrderId());
+                    OrdersId.nextOrder();
+                    MoneyRegister.file(receipt);
+                    MoneyRegister.chargeCreditCard(message.getCustomer(), receipt.getPrice());
+                    complete(message, MoneyRegister.getTotalEarnings());
+                    //receipt.setIssuedTick();
+			}
+            else
+                complete(message, null);
 		});
 		
 	}
