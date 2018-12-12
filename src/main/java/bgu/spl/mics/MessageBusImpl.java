@@ -42,8 +42,6 @@ public class MessageBusImpl implements MessageBus {
 			if (!Events.containsKey(type))
 				Events.put(type, new LinkedList<>());
 			Events.get(type).add(m);
-			//notifyAll();
-			//System.out.println("NOTIFIED! - subscribe event " + m.toString() + " type : " + type.toString());
 		}
 	}
 
@@ -54,8 +52,6 @@ public class MessageBusImpl implements MessageBus {
 			if (!Brodcasts.containsKey(type))
 				Brodcasts.put(type, new LinkedList<>());
 			Brodcasts.get(type).add(m);
-			//notifyAll();
-			//System.out.println("NOTIFIED! - subscribe broadcast " + m.toString() + " type : " + type.toString());
 		}
 	}
 
@@ -75,7 +71,6 @@ public class MessageBusImpl implements MessageBus {
 				for (MicroService m : Services)
 					Missions.get(m).add(b);
 				notifyAll();
-				//System.out.println(" NOTIFIED send broadcast " + b.toString());
 			}
 		}
 	}
@@ -93,7 +88,6 @@ public class MessageBusImpl implements MessageBus {
 				Missions.get(m).add(e);
 				Results.put(e, new Future());
 				notifyAll();
-				//System.out.println(" NOTIFIED send event   " + e.toString());
 			}
 			return Results.get(e);
 		}
@@ -102,7 +96,6 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void register(MicroService m) {
 		Missions.put(m, new ConcurrentLinkedQueue<>());
-		//System.out.println(m.toString() + " has registered");
 	}
 
 	@Override

@@ -1,9 +1,10 @@
 package bgu.spl.mics.application.passiveObjects;
-
 import bgu.spl.mics.Future;
 
-import java.util.List;
+import java.util.Iterator;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 
 /**
  * Passive object representing the resource manager.
@@ -14,10 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * You can add ONLY private methods and fields to this class.
  */
+
 public class ResourcesHolder {
 
 	private ConcurrentHashMap<DeliveryVehicle, Boolean> Vehicles;
-
+	private Semaphore sem;
 
 	/**
      * Retrieves the single instance of this class.
@@ -27,6 +29,7 @@ public class ResourcesHolder {
 	}
 
 	private ResourcesHolder() {
+		Vehicles = new ConcurrentHashMap<>();
 	}
 
 
@@ -42,7 +45,22 @@ public class ResourcesHolder {
      * 			{@link DeliveryVehicle} when completed.   
      */
 	public Future<DeliveryVehicle> acquireVehicle() {
-		//TODO: Implement this
+		/*Future<DeliveryVehicle> dvF = new Future<>();
+		if (sem.tryAcquire()) {
+			Iterator<DeliveryVehicle> iter = Vehicles.keySet().iterator();
+			Boolean found = false;
+			while (iter.hasNext() & !found) {
+				DeliveryVehicle dv = iter.next();
+				if (Vehicles.get(dv)) {
+					Vehicles.replace(dv, false);
+					found = true;
+					dvF.resolve(dv);
+				}
+			}
+		}
+		else {
+			dvF.get(Vehicles.get())
+		}*/
 		return null;
 	}
 	
@@ -53,7 +71,8 @@ public class ResourcesHolder {
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
-		//TODO: Implement this
+		sem.release(1);
+		Vehicles.replace(vehicle, false);
 	}
 	
 	/**
@@ -62,7 +81,9 @@ public class ResourcesHolder {
      * @param vehicles	Array of {@link DeliveryVehicle} instances to store.
      */
 	public void load(DeliveryVehicle[] vehicles) {
-		//TODO: Implement this
+		for(int i = 0; i < vehicles.length; i++)
+			Vehicles.put(vehicles[i], true);
+		sem = new Semaphore(vehicles.length);
 	}
 
 }
