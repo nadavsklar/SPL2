@@ -1,6 +1,10 @@
 package bgu.spl.mics.application.services;
-
+import bgu.spl.mics.Future;
+import bgu.spl.mics.MessageBus;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.passiveObjects.Inventory;
+import bgu.spl.mics.application.passiveObjects.MoneyRegister;
+import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 
 /**
  * InventoryService is in charge of the book inventory and stock.
@@ -14,15 +18,17 @@ import bgu.spl.mics.MicroService;
 
 public class InventoryService extends MicroService{
 
-	public InventoryService() {
-		super("Change_This_Name");
-		// TODO Implement this
+	private Inventory inventory;
+    //take, check avalability and get price
+
+	public InventoryService(String name) {
+		super(name);
+		inventory = Inventory.getInstance();
 	}
 
 	@Override
 	protected void initialize() {
-		// TODO Implement this
-		
+
 	}
 
 }
