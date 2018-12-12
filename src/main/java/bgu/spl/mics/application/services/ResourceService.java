@@ -1,6 +1,5 @@
 package bgu.spl.mics.application.services;
 
-import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.CheckAvailabilityVehicle;
 import bgu.spl.mics.application.messages.ReleaseVehicle;
@@ -19,8 +18,8 @@ public class ResourceService extends MicroService{
 
 	private ResourcesHolder Resources;
 
-	public ResourceService() {
-		super("Change_This_Name");
+	public ResourceService(String name) {
+		super(name);
 		Resources = ResourcesHolder.getInstance();
 	}
 

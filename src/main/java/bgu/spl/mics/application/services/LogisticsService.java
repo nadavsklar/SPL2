@@ -19,13 +19,13 @@ import bgu.spl.mics.application.passiveObjects.*;
  */
 public class LogisticsService extends MicroService {
 
-	public LogisticsService() {
-		super("Change_This_Name");
+	public LogisticsService(String name) {
+		super(name);
 	}
 
 	@Override
 	protected void initialize() {
-		subscribeEvent(DeliveryEvent.class, message->{
+		subscribeEvent(DeliveryEvent.class, message -> {
 			CheckAvailabilityVehicle check = new CheckAvailabilityVehicle();
 			Future<DeliveryVehicle> Result = sendEvent(check);
 			DeliveryVehicle Vehicle = Result.get();

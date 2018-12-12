@@ -21,8 +21,8 @@ import java.util.Vector;
 public class APIService extends MicroService{
 
 	private Vector<BookOrderEvent> Orders;
-	public APIService(Vector<BookOrderEvent> Orders) {
-		super("Change_This_Name");
+	public APIService(String name, Vector<BookOrderEvent> Orders) {
+		super(name);
 		this.Orders = Orders;
 	}
 
