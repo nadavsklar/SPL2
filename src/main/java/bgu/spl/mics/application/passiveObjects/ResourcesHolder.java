@@ -1,9 +1,6 @@
 package bgu.spl.mics.application.passiveObjects;
 import bgu.spl.mics.Future;
-
-import java.util.Iterator;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -18,7 +15,7 @@ import java.util.concurrent.Semaphore;
 
 public class ResourcesHolder {
 
-	private ConcurrentHashMap<DeliveryVehicle, Boolean> Vehicles;
+	private Vector<DeliveryVehicle> availableVehicles;
 	private Semaphore sem;
 
 	/**
@@ -29,7 +26,7 @@ public class ResourcesHolder {
 	}
 
 	private ResourcesHolder() {
-		Vehicles = new ConcurrentHashMap<>();
+		availableVehicles = new Vector<>();
 	}
 
 
@@ -45,23 +42,15 @@ public class ResourcesHolder {
      * 			{@link DeliveryVehicle} when completed.   
      */
 	public Future<DeliveryVehicle> acquireVehicle() {
-		/*Future<DeliveryVehicle> dvF = new Future<>();
-		if (sem.tryAcquire()) {
-			Iterator<DeliveryVehicle> iter = Vehicles.keySet().iterator();
-			Boolean found = false;
-			while (iter.hasNext() & !found) {
-				DeliveryVehicle dv = iter.next();
-				if (Vehicles.get(dv)) {
-					Vehicles.replace(dv, false);
-					found = true;
-					dvF.resolve(dv);
-				}
-			}
-		}
-		else {
-			dvF.get(Vehicles.get())
-		}*/
-		return null;
+	    try {
+            sem.acquire();
+        }
+        catch (InterruptedException ie) {
+	        ie.printStackTrace();
+        }
+        Future<DeliveryVehicle> dv = new Future<>();
+	    dv.resolve(availableVehicles.get(0));
+		return dv;
 	}
 	
 	/**
@@ -71,8 +60,8 @@ public class ResourcesHolder {
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
-		sem.release(1);
-		Vehicles.replace(vehicle, true);
+        sem.release(1);
+        availableVehicles.add(vehicle);
 	}
 	
 	/**
@@ -81,9 +70,9 @@ public class ResourcesHolder {
      * @param vehicles	Array of {@link DeliveryVehicle} instances to store.
      */
 	public void load(DeliveryVehicle[] vehicles) {
-		Vehicles.clear();
-		for(int i = 0; i < vehicles.length; i++)
-			Vehicles.put(vehicles[i], true);
+        availableVehicles.clear();
+		for (int i = 0; i < vehicles.length; i++)
+            availableVehicles.add(vehicles[i]);
 		sem = new Semaphore(vehicles.length);
 	}
 
