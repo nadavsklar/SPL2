@@ -1,6 +1,10 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,6 +19,7 @@ import java.util.List;
 public class MoneyRegister {
 
 	private List<OrderReceipt> Receipts;
+	private int totalEarnings;
 
 	/**
      * Retrieves the single instance of this class.
@@ -24,6 +29,8 @@ public class MoneyRegister {
 	}
 
 	private MoneyRegister() {
+		Receipts = new LinkedList<>();
+		totalEarnings = 0;
 	}
 
 
@@ -37,14 +44,15 @@ public class MoneyRegister {
      * @param r		The receipt to save in the money register.
      */
 	public void file (OrderReceipt r) {
+		Receipts.add(r);
+		totalEarnings = totalEarnings + r.getPrice();
 	}
 	
 	/**
      * Retrieves the current total earnings of the store.  
      */
 	public int getTotalEarnings() {
-		//TODO: Implement this
-		return 0;
+		return totalEarnings;
 	}
 	
 	/**
@@ -53,7 +61,7 @@ public class MoneyRegister {
      * @param amount 	amount to charge
      */
 	public void chargeCreditCard(Customer c, int amount) {
-		// TODO Implement this
+		c.setAvailableAmountInCreditCard(amount);
 	}
 	
 	/**
@@ -62,6 +70,6 @@ public class MoneyRegister {
      * This method is called by the main method in order to generate the output.. 
      */
 	public void printOrderReceipts(String filename) {
-		//TODO: Implement this
+		Printer.SerializablePrinter(Receipts, filename);
 	}
 }
