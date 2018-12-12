@@ -4,6 +4,7 @@ import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.CheckAvailabilityVehicle;
 import bgu.spl.mics.application.messages.DeliveryEvent;
+import bgu.spl.mics.application.messages.ReleaseVehicle;
 import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
 import bgu.spl.mics.application.passiveObjects.*;
 
@@ -29,8 +30,8 @@ public class LogisticsService extends MicroService {
 			Future<DeliveryVehicle> Result = sendEvent(check);
 			DeliveryVehicle Vehicle = Result.get();
 			Vehicle.deliver(message.getAddress(), message.getDistance());
-			ResourcesHolder.getInstance().releaseVehicle(Vehicle);
-			//complete(message, true);
+			ReleaseVehicle release = new ReleaseVehicle(Vehicle);
+			sendEvent(release);
 		});
 		
 	}

@@ -3,6 +3,7 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.CheckAvailabilityVehicle;
+import bgu.spl.mics.application.messages.ReleaseVehicle;
 import bgu.spl.mics.application.passiveObjects.*;
 
 /**
@@ -28,6 +29,9 @@ public class ResourceService extends MicroService{
 		subscribeEvent(CheckAvailabilityVehicle.class, message ->{
 			DeliveryVehicle Vehicle = Resources.acquireVehicle().get();
 			complete(message, Vehicle);
+		});
+		subscribeEvent(ReleaseVehicle.class, message->{
+			Resources.releaseVehicle(message.getVehicle());
 		});
 		
 	}
