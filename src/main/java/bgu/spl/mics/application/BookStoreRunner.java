@@ -9,6 +9,7 @@ import bgu.spl.mics.application.services.*;
 import com.google.gson.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -57,21 +58,19 @@ public class BookStoreRunner {
 
             }
 
-            //JsonElement Vehicles = jsonObject.getAsJsonArray("initialResources").get(0);
-            //LinkedTreeMap<String, JsonArray> V = Vehicles.
-            /*VehiclesInfo = new DeliveryVehicle[Vehicles.];
+            JsonElement Vehicles = jsonObject.getAsJsonArray("initialResources").get(0).getAsJsonObject();
+            JsonElement temp = ((JsonObject) Vehicles).get("vehicles");
+            JsonArray VehiclesArray = temp.getAsJsonArray();
 
-            for(int i = 0; i < Vehicles.size(); i++){
-                String vehicleInfo = Vehicles.get(i).toString();
-                String licenseInfo = vehicleInfo.substring(vehicleInfo.indexOf(':') + 1, vehicleInfo.indexOf(','));
-                vehicleInfo = vehicleInfo.substring(vehicleInfo.indexOf(',') + 1);
+            VehiclesInfo = new DeliveryVehicle[VehiclesArray.size()];
+
+            for (int i = 0; i < VehiclesArray.size(); i++) {
+                String licenseInfo = VehiclesArray.get(i).getAsJsonObject().get("license").toString();
                 int license = Integer.parseInt(licenseInfo);
-                //
-                String speedInfo = vehicleInfo.substring(vehicleInfo.indexOf(':') + 1, vehicleInfo.indexOf('}'));
+                String speedInfo = VehiclesArray.get(i).getAsJsonObject().get("speed").toString();
                 int speed = Integer.parseInt(speedInfo);
-                //
                 VehiclesInfo[i] = new DeliveryVehicle(license, speed);
-            }*/
+            }
 
             JsonElement Time = jsonObject.getAsJsonObject("services").get("time");
             String TimeInfo = Time.toString();
