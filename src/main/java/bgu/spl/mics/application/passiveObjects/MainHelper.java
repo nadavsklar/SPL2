@@ -131,7 +131,7 @@ public class MainHelper {
                 BookOrderEvent CurrentEvent = new BookOrderEvent(Customers[i], BookTitle, tick);
                 CustomerEvents.add(CurrentEvent);
             }
-            APIServices[i] = new APIService("API Service" + i, CustomerEvents);
+            APIServices[i] = new APIService("API Service " + i, CustomerEvents);
         }
         Object[][] toReturn = new Object[2][size];
         toReturn[0] = APIServices;
