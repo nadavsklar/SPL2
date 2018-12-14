@@ -43,6 +43,7 @@ public class TimeService extends MicroService{
                     System.out.println(" timer ended, sending terminate");
                     SystemTimer.cancel();
                     sendBroadcast(new TerminateBroadcast());
+                    System.out.println("Timer is terminating");
                     terminate();
                 }
                 else {

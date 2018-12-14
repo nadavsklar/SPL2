@@ -1,15 +1,11 @@
 package bgu.spl.mics.application;
 
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.BookOrderEvent;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 
 /** This is the Main class of the application. You should parse the input file,
  * create the different instances of the objects, and run the system.
@@ -37,19 +33,12 @@ public class BookStoreRunner {
             JsonObject jsonObject = (JsonObject) obj;
 
             BooksInfo = MainHelper.InitBooks(jsonObject, BooksInfo);
-
             VehiclesInfo = MainHelper.InitVehicles(jsonObject, VehiclesInfo);
-
             TimerService = MainHelper.InitTimerService(jsonObject, TimerService);
-
             SellingServices = MainHelper.InitSellingServices(jsonObject, SellingServices);
-
             InventoryServices = MainHelper.InitInventoryServices(jsonObject, InventoryServices);
-
             LogisticServices = MainHelper.InitLogisticServices(jsonObject, LogisticServices);
-
             ResourceServices = MainHelper.InitResourceServices(jsonObject, ResourceServices);
-
             Object[][] tmp = MainHelper.InitAPIServices(jsonObject, APIServices, Customers);
             APIServices = (APIService[]) tmp[0];
             Customers = (Customer[]) tmp[1];
