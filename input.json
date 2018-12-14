@@ -38,7 +38,7 @@
         "distance":12,
          "creditCard":{"number":453536,"amount":220},
     "orderSchedule": [
-        {"bookTitle": "The Hunger Games", "tick": 12}
+        {"bookTitle": "The Hunger Games", "tick": 1}
     ]
     }
   ]
