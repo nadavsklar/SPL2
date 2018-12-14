@@ -39,10 +39,9 @@ public class SellingService extends MicroService{
             //receipt.setProccesTick(message.getTimeTick());
             System.out.println(getName() + " sending check avalibility book ");
             Future<Integer> price = sendEvent(new CheckAvailabilityBook(message.getBookTitle()));
-            System.out.println(message.getBookTitle());
             int priceValue = price.get();
-            System.out.println(priceValue);
-            System.out.println(message.getCustomer().getAvailableCreditAmount());
+            System.out.println("Price = " + priceValue);
+            System.out.println("Amount = " + message.getCustomer().getAvailableCreditAmount());
 			if (priceValue >= 0 && message.getCustomer().getAvailableCreditAmount() >= priceValue) {
 			    System.out.println(getName() + " sending taking book ");
                     sendEvent(new TakeBook(message.getBookTitle()));

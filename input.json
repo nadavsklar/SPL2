@@ -1,7 +1,9 @@
 {
   "initialInventory": [
-  {"bookTitle": "Harry Poter", "amount": 10, "price": 44},
-  {"bookTitle": "The Hunger Games", "amount": 90, "price": 44}
+    {"bookTitle": "Harry Poter", "amount": 10, "price": 90},
+    {"bookTitle": "The Hunger Games", "amount": 90, "price": 102},
+    {"bookTitle": "1984", "amount": 1984, "price": 84},
+    {"bookTile": "Game of Thrones", "amount": 20, "price": 11}
   ],
   "initialResources":[
    {"vehicles":[
@@ -27,8 +29,8 @@
         "distance":33,
         "creditCard":{"number":67890,"amount":88},
         "orderSchedule": [
-            {"bookTitle": "Harry Poter", "tick": 2},
-            {"bookTitle": "The Hunger Games", "tick": 2}
+            {"bookTitle": "Harry Poter", "tick": 12},
+            {"bookTitle": "The Hunger Games", "tick": 13}
           ]
       },
     {
@@ -40,7 +42,30 @@
     "orderSchedule": [
         {"bookTitle": "The Hunger Games", "tick": 1}
     ]
-    }
+    },
+      {
+        "id": 314825779,
+        "name": "Tomer",
+        "address": "NessZiona 3333",
+        "distance":4,
+        "creditCard":{"number":100000,"amount":10000},
+        "orderSchedule": [
+          {"bookTitle": "1984", "tick": 2},
+          {"bookTitle": "Harry Poter", "tick": 2}
+        ]
+      },
+      {
+        "id": 315277681,
+        "name": "Nadav",
+        "address": "Meitar 98",
+        "distance":11,
+        "creditCard":{"number":200000,"amount":20000},
+        "orderSchedule": [
+          {"bookTitle": "Harry Poter", "tick": 1},
+          {"bookTitle": "Game of Thrones", "tick": 1},
+          {"bookTitle": "Game of Thrones", "tick": 1}
+        ]
+      }
   ]
   }
   

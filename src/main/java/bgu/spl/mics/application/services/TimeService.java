@@ -45,6 +45,7 @@ public class TimeService extends MicroService{
                     sendBroadcast(new TerminateBroadcast());
                 }
                 else {
+                	System.out.println();
                     System.out.println(getName() + " is sending tick broadcast " + currentTick);
                     TickBroadcast TickBroadcast = new TickBroadcast(currentTick);
                     sendBroadcast(TickBroadcast);

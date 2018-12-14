@@ -32,8 +32,10 @@ public class Future<T> {
 	 */
 	public synchronized T get() {
 		try{
-			while(result == null)
+			while(result == null) {
 				wait();
+				System.out.println("Waiting for Vehicle");
+			}
 		}
 		catch (InterruptedException e){
 			System.out.println("Interrupted Exception wat caught");

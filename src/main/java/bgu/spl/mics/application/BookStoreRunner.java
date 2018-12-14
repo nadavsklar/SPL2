@@ -4,6 +4,7 @@ import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.*;
 import java.io.*;
+import java.util.Vector;
 
 
 /** This is the Main class of the application. You should parse the input file,
@@ -28,7 +29,8 @@ public class BookStoreRunner {
 
         try {
 
-            Object obj = parser.parse(new FileReader(args[0] + ".json"));
+            //Object obj = parser.parse(new FileReader(args[0] + ".json"));
+            Object obj = parser.parse((new FileReader(("input.json"))));
             JsonObject jsonObject = (JsonObject) obj;
 
             BooksInfo = MainHelper.InitBooks(jsonObject, BooksInfo);
@@ -61,10 +63,27 @@ public class BookStoreRunner {
 
         try {
             TimeThread.join();
+            /*for(int i = 0; i < Customers.length; i++){
+                Customer c = Customers[i];
+                Vector<OrderReceipt> orders = c.getCustomerReceiptList();
+                System.out.println("Name = " + c.getName());
+                System.out.print("Books = ");
+                Vector<OrderReceipt> tmp = new Vector<>();
+                for(OrderReceipt orderReceipt: orders){
+                    if(!tmp.contains(orderReceipt))
+                        tmp.add(orderReceipt);
+                    else
+                        orders.remove(orderReceipt);
+                }
+                for(int j = 0; j < orders.size(); j++)
+                    System.out.print(orders.get(j).getBookTitle() + ", ");
+                System.out.println();
+            }*/
         }
         catch (InterruptedException ie) {
             ie.printStackTrace();
         }
+
 
         MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
 

@@ -40,6 +40,7 @@ public class APIService extends MicroService{
 
 		    Integer currentTimeTick = message.getCurrentTick();
 		    Vector<OrderReceipt> currentReceipts = new Vector<>();
+		    Vector<OrderReceipt> tmp = new Vector<>();
 		    for (BookOrderEvent bookOrderEvent : Orders) {
 		        if (currentTimeTick.equals(bookOrderEvent.getTimeTick())) {
 		            System.out.println(getName() + " is sending book order event" );
@@ -51,6 +52,13 @@ public class APIService extends MicroService{
                         int distance = bookOrderEvent.getCustomer().getDistance();
                         System.out.println(getName() + " sending delivery event");
                         sendEvent(new DeliveryEvent(address, distance));
+                        for(OrderReceipt orderReceipt: currentReceipts){
+                        	if(!tmp.contains(orderReceipt))
+                        		tmp.add(orderReceipt);
+                        	else
+                        		currentReceipts.remove(orderReceipt);
+						}
+                        bookOrderEvent.getCustomer().addOrderReceipt(currentReceipts);
                     }
                 }
             }

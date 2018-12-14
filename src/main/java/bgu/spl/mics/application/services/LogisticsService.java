@@ -31,6 +31,8 @@ public class LogisticsService extends MicroService {
 			System.out.println(getName() + " is sending check availability event");
 			Future<DeliveryVehicle> Result = sendEvent(check);
 			DeliveryVehicle Vehicle = Result.get();
+			if(Vehicle != null)
+				System.out.println(this.getName() + ", " + Vehicle.getLicense() + ", " + Vehicle.getSpeed());
 			Vehicle.deliver(message.getAddress(), message.getDistance());
 			ReleaseVehicle release = new ReleaseVehicle(Vehicle);
 			System.out.println(getName() + " is sending release event ");
