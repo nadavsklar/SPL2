@@ -108,7 +108,9 @@ public class MainHelper {
             String idInfo = CurrentCustomer.getAsJsonObject().get("id").toString();
             int id = Integer.parseInt(idInfo);
             String name = CurrentCustomer.getAsJsonObject().get("name").toString();
+            name = name.substring(1, name.length() - 1);
             String address = CurrentCustomer.getAsJsonObject().get("address").toString();
+            address = address.substring(1, address.length() - 1);
             String distanceInfo = CurrentCustomer.getAsJsonObject().get("distance").toString();
             int distance = Integer.parseInt(distanceInfo);
             String creditCardNumberInfo = CurrentCustomer.getAsJsonObject().get("creditCard").getAsJsonObject().get("number").toString();
