@@ -10,6 +10,7 @@ import bgu.spl.mics.application.passiveObjects.MoneyRegister;
 import bgu.spl.mics.application.passiveObjects.OrderReceipt;
 import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class APIService extends MicroService{
 
-	private ConcurrentHashMap<BookOrderEvent, Integer> Orders;
+	private Vector<BookOrderEvent> Orders;
 
-	public APIService(String name, ConcurrentHashMap<BookOrderEvent, Integer> Orders) {
+	public APIService(String name, Vector<BookOrderEvent> Orders) {
 		super(name);
 		this.Orders = Orders;
 	}
@@ -41,8 +42,8 @@ public class APIService extends MicroService{
 
 		    Integer currentTimeTick = message.getCurrentTick();
 		    Vector<OrderReceipt> currentReceipts = new Vector<>();
-		    for (BookOrderEvent bookOrderEvent : Orders.keySet()) {
-		        if (currentTimeTick.equals(Orders.get(bookOrderEvent))) {
+		    for (BookOrderEvent bookOrderEvent : Orders) {
+		        if (currentTimeTick.equals(bookOrderEvent.getTimeTick())) {
 		            System.out.println(getName() + " is sending book order event" );
 		            OrderReceipt currentResult = (OrderReceipt)sendEvent(bookOrderEvent).get();
 		            System.out.println(getName() + " has received Order receipt");
