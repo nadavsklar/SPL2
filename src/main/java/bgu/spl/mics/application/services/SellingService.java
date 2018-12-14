@@ -5,6 +5,7 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BookOrderEvent;
 import bgu.spl.mics.application.messages.CheckAvailabilityBook;
 import bgu.spl.mics.application.messages.TakeBook;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.MoneyRegister;
 import bgu.spl.mics.application.passiveObjects.*;
 
@@ -55,6 +56,10 @@ public class SellingService extends MicroService{
             else
                 complete(message, null);
 		});
+
+        subscribeBroadcast(TerminateBroadcast.class, message -> {
+            terminate();
+        });
 		
 	}
 

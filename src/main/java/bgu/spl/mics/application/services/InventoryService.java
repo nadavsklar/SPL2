@@ -3,6 +3,7 @@ import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.CheckAvailabilityBook;
 import bgu.spl.mics.application.messages.TakeBook;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.Inventory;
 import bgu.spl.mics.application.passiveObjects.MoneyRegister;
 import bgu.spl.mics.application.passiveObjects.OrderResult;
@@ -39,6 +40,10 @@ public class InventoryService extends MicroService{
             OrderResult result = inventory.take(iv.getBook());
             complete(iv, result);
         });
+
+		subscribeBroadcast(TerminateBroadcast.class, message -> {
+			terminate();
+		});
 
 	}
 

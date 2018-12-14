@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.passiveObjects.*;
 
@@ -42,6 +43,11 @@ public class TimeService extends MicroService{
 				currentTick++;
 			}
 		}, speed, duration * speed);
+
+		if (duration == currentTick) {
+            sendBroadcast(new TerminateBroadcast());
+            terminate();
+        }
 	}
 
 	public int getSpeed() {

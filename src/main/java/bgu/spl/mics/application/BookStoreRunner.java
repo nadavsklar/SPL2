@@ -1,10 +1,8 @@
 package bgu.spl.mics.application;
 
+import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BookOrderEvent;
-import bgu.spl.mics.application.passiveObjects.BookInventoryInfo;
-import bgu.spl.mics.application.passiveObjects.Customer;
-import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
-import bgu.spl.mics.application.passiveObjects.OrderReceipt;
+import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.*;
 import java.io.FileNotFoundException;
@@ -128,6 +126,26 @@ public class BookStoreRunner {
 
                 }
             }
+
+
+            ///// Execution
+            MicroService[] Workers = MainHelper.initiateWorkers(SellingServices, InventoryServices, LogisticServices, ResourceServices, apiServices);
+
+            Thread[] WorkersThreads = MainHelper.initiateThreads(Workers);
+            for (Thread thread : WorkersThreads)
+                thread.start();
+
+            Thread TimeThread = new Thread(TimerService);
+            TimeThread.start();
+
+            try {
+                TimeThread.join();
+            }
+            catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+
+            //Outputs
 
         }
         catch (FileNotFoundException e) {
