@@ -98,6 +98,44 @@ public class MainHelper {
         return ResourceServices;
     }
 
+    public static Object[][] InitAPIServices(JsonObject jsonObject, APIService[] APIServices, Customer[] Customers){
+        JsonArray CustomersArray = jsonObject.getAsJsonObject("services").getAsJsonArray("customers");
+        int size = CustomersArray.size();
+        Customers = new Customer[size];
+        APIServices = new APIService[size];
+        for(int i = 0; i < Customers.length; i++){
+            JsonElement CurrentCustomer = CustomersArray.get(i);
+            String idInfo = CurrentCustomer.getAsJsonObject().get("id").toString();
+            int id = Integer.parseInt(idInfo);
+            String name = CurrentCustomer.getAsJsonObject().get("name").toString();
+            String address = CurrentCustomer.getAsJsonObject().get("address").toString();
+            String distanceInfo = CurrentCustomer.getAsJsonObject().get("distance").toString();
+            int distance = Integer.parseInt(distanceInfo);
+            String creditCardNumberInfo = CurrentCustomer.getAsJsonObject().get("creditCard").getAsJsonObject().get("number").toString();
+            int creditCardNumber = Integer.parseInt(creditCardNumberInfo);
+            String amountCreditCardNumberInfo = CurrentCustomer.getAsJsonObject().get("creditCard").getAsJsonObject().get("amount").toString();
+            int amountCreditCard = Integer.parseInt(amountCreditCardNumberInfo);
+
+            Customers[i] = new Customer(id, name, address, distance, new Vector<OrderReceipt>(), creditCardNumber, amountCreditCard);
+            Vector<BookOrderEvent> CustomerEvents = new Vector<>();
+
+            JsonArray ListOrders = CurrentCustomer.getAsJsonObject().getAsJsonArray("orderSchedule");
+            for (int j = 0; j < ListOrders.size(); j++) {
+                JsonElement CurrentOrder = ListOrders.get(j);
+                String BookTitle = CurrentOrder.getAsJsonObject().get("bookTitle").toString();
+                String tickInfo = CurrentOrder.getAsJsonObject().get("tick").toString();
+                int tick = Integer.parseInt(tickInfo);
+                BookOrderEvent CurrentEvent = new BookOrderEvent(Customers[i], BookTitle, tick);
+                CustomerEvents.add(CurrentEvent);
+            }
+            APIServices[i] = new APIService("API Service" + i, CustomerEvents);
+        }
+        Object[][] toReturn = new Object[2][size];
+        toReturn[0] = APIServices;
+        toReturn[1] = Customers;
+        return toReturn;
+    }
+
     public static MicroService[] initiateWorkers(SellingService[] SellingServices, InventoryService[] InventoryServices, LogisticsService[] LogisticServices, ResourceService[] ResourceServices, APIService[] apiServices) {
         int numOfWorkers = SellingServices.length;
         numOfWorkers += InventoryServices.length;

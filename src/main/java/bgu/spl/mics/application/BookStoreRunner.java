@@ -108,6 +108,11 @@ public class BookStoreRunner {
             for(int i = 0; i < ResourceServices.length; i++)
                 ResourceServices[i] = new ResourceService("Resource Handler " + i);*/
 
+            Object[][] tmp = MainHelper.InitAPIServices(jsonObject, APIServices, Customers);
+            APIServices = (APIService[]) tmp[0];
+            Customers = (Customer[]) tmp[1];
+
+            /*
             JsonArray CustomersArray = jsonObject.getAsJsonObject("services").getAsJsonArray("customers");
             int size = CustomersArray.size();
             Customers = new Customer[size];
@@ -139,6 +144,7 @@ public class BookStoreRunner {
                 }
                 APIServices[i] = new APIService("API Service" + i, CustomerEvents);
             }
+             */
 
         }
         catch (FileNotFoundException e) {
