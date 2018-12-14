@@ -34,19 +34,25 @@ public class APIService extends MicroService{
 
 	@Override
 	protected void initialize() {
+	    System.out.println(getName() + " Has initiated");
+
 		subscribeBroadcast(TickBroadcast.class, message -> {
+		    System.out.println(getName() + " Has received broadcast " + message.getClass());
+
 		    Integer currentTimeTick = message.getCurrentTick();
 		    Vector<OrderReceipt> currentReceipts = new Vector<>();
 		    for (BookOrderEvent bookOrderEvent : Orders.keySet()) {
 		        if (currentTimeTick.equals(Orders.get(bookOrderEvent))) {
+		            System.out.println(getName() + " is sending book order event" );
 		            OrderReceipt currentResult = (OrderReceipt)sendEvent(bookOrderEvent).get();
+		            System.out.println(getName() + " has received Order receipt");
 		            if (currentResult != null) {
                         currentReceipts.add(currentResult);
                         // TIME TICK
                         String address = bookOrderEvent.getCustomer().getAddress();
                         int distance = bookOrderEvent.getCustomer().getDistance();
+                        System.out.println(getName() + " sending delivery event");
                         sendEvent(new DeliveryEvent(address, distance));
-
                     }
                 }
             }

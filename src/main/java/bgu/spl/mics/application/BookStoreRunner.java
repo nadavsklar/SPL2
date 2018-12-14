@@ -7,7 +7,6 @@ import bgu.spl.mics.application.services.*;
 import com.google.gson.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,15 +17,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BookStoreRunner {
     public static void main(String[] args) {
 
-        BookInventoryInfo[] BooksInfo;
-        DeliveryVehicle[] VehiclesInfo;
-        TimeService TimerService;
-        SellingService[] SellingServices;
-        InventoryService[] InventoryServices;
-        LogisticsService[] LogisticServices;
-        ResourceService[] ResourceServices;
-        APIService[] apiServices;
-        Customer[] Customers;
+        BookInventoryInfo[] BooksInfo = null;
+        DeliveryVehicle[] VehiclesInfo = null;
+        TimeService TimerService = null;
+        SellingService[] SellingServices = null;
+        InventoryService[] InventoryServices = null;
+        LogisticsService[] LogisticServices = null;
+        ResourceService[] ResourceServices = null;
+        APIService[] apiServices = null;
+        Customer[] Customers = null;
 
 
         JsonParser parser = new JsonParser();
@@ -125,31 +124,42 @@ public class BookStoreRunner {
                 for (int j = 0; j < ListOrders.size(); j++) {
 
                 }
+                //continue implement TODO
+
+
+                //
+                ConcurrentHashMap<BookOrderEvent, Integer> Orders = new ConcurrentHashMap<>();
+                Orders.put(new BookOrderEvent(Customers[i], "Harry Poter", 1), 1);
+                apiServices[i] = new APIService(Customers[i].getName(), Orders);
             }
 
 
-            ///// Execution
-            MicroService[] Workers = MainHelper.initiateWorkers(SellingServices, InventoryServices, LogisticServices, ResourceServices, apiServices);
-
-            Thread[] WorkersThreads = MainHelper.initiateThreads(Workers);
-            for (Thread thread : WorkersThreads)
-                thread.start();
-
-            Thread TimeThread = new Thread(TimerService);
-            TimeThread.start();
-
-            try {
-                TimeThread.join();
-            }
-            catch (InterruptedException ie) {
-                ie.printStackTrace();
-            }
-
-            //Outputs
 
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        ///// Execution
+
+        Inventory.getInstance().load(BooksInfo);
+        ResourcesHolder.getInstance().load(VehiclesInfo);
+        MicroService[] Workers = MainHelper.initiateWorkers(SellingServices, InventoryServices, LogisticServices, ResourceServices, apiServices);
+
+        Thread[] WorkersThreads = MainHelper.initiateThreads(Workers);
+        for (Thread thread : WorkersThreads)
+            thread.start();
+
+        Thread TimeThread = new Thread(TimerService);
+        TimeThread.start();
+
+        try {
+            TimeThread.join();
+        }
+        catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
+
+        //Outputs
     }
 }

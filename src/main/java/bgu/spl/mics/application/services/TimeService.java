@@ -11,7 +11,7 @@ import java.util.TimerTask;
 /**
  * TimeService is the global system timer There is only one instance of this micro-service.
  * It keeps track of the amount of ticks passed since initialization and notifies
- * all other micro-services about the current time tick using {@link Tick Broadcast}.
+ * all other micro-services about the current time tick using {@link TickBroadcast}.
  * This class may not hold references for objects which it is not responsible for:
  * {@link ResourcesHolder}, {@link MoneyRegister}, {@link Inventory}.
  * 
@@ -35,19 +35,25 @@ public class TimeService extends MicroService{
 
 	@Override
 	protected void initialize() {
+	    System.out.println(getName() + " has initiated");
 		SystemTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				TickBroadcast TickBroadcast = new TickBroadcast(currentTick);
-				sendBroadcast(TickBroadcast);
-				currentTick++;
+                if (duration == currentTick) {
+                    System.out.println(" timer ended, sending terminate");
+                    SystemTimer.cancel();
+                    sendBroadcast(new TerminateBroadcast());
+                    terminate();
+                }
+                else {
+                    System.out.println(getName() + " is sending tick broadcast " + currentTick);
+                    TickBroadcast TickBroadcast = new TickBroadcast(currentTick);
+                    sendBroadcast(TickBroadcast);
+                    System.out.println("broadcast number " + currentTick + " sent ");
+                    currentTick++;
+                }
 			}
 		}, speed, duration * speed);
-
-		if (duration == currentTick) {
-            sendBroadcast(new TerminateBroadcast());
-            terminate();
-        }
 	}
 
 	public int getSpeed() {

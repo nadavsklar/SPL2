@@ -103,18 +103,19 @@ public class MessageBusImpl implements MessageBus {
 		Queue<Message> mEvents = Missions.get(m);
 		mEvents.clear();
 		Missions.remove(m);
-		for(int i = 0; i < Events.size(); i++) {
-			List<MicroService> serviceList = Events.get(i);
-			if(serviceList.contains(m))
-				serviceList.remove(m);
-		}
-
-		for(int i = 0; i < Brodcasts.size(); i++) {
-			List<MicroService> serviceList = Brodcasts.get(i);
-			if(serviceList.contains(m))
-				serviceList.remove(m);
-		}
+        deleteSubscribes(Events, m);
+        deleteSubscribes(Brodcasts, m);
 	}
+
+	private void deleteSubscribes(ConcurrentHashMap Map, MicroService m) {
+        Iterator it = Map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            List<MicroService> serviceList = (List<MicroService>)pair.getValue();
+            if (serviceList.contains(m))
+                serviceList.remove(m);
+        }
+    }
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
