@@ -61,6 +61,7 @@ public class APIService extends MicroService{
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
+		    System.out.println(getName() + " is terminating ");
 		    terminate();
         });
 	}

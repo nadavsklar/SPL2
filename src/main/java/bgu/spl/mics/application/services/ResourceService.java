@@ -5,6 +5,7 @@ import bgu.spl.mics.application.messages.CheckAvailabilityVehicle;
 import bgu.spl.mics.application.messages.ReleaseVehicle;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.*;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  * ResourceService is in charge of the store resources - the delivery vehicles.
@@ -27,15 +28,18 @@ public class ResourceService extends MicroService{
 	@Override
 	protected void initialize() {
 		subscribeEvent(CheckAvailabilityVehicle.class, message ->{
+            System.out.println(getName() + " aquiring vehicle ");
 			DeliveryVehicle Vehicle = Resources.acquireVehicle().get();
 			complete(message, Vehicle);
 		});
 		subscribeEvent(ReleaseVehicle.class, message->{
+		    System.out.println(getName() + " releasing vehicle ");
 			Resources.releaseVehicle(message.getVehicle());
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-			terminate();
+            System.out.println(getName() + " is terminating ");
+            terminate();
 		});
 		
 	}

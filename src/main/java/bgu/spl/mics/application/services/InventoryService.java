@@ -44,7 +44,8 @@ public class InventoryService extends MicroService{
         });
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-			terminate();
+            System.out.println(getName() + " is terminating ");
+            terminate();
 		});
 
 	}
