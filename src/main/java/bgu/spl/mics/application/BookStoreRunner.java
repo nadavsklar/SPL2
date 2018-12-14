@@ -53,7 +53,6 @@ public class BookStoreRunner {
             Object[][] tmp = MainHelper.InitAPIServices(jsonObject, APIServices, Customers);
             APIServices = (APIService[]) tmp[0];
             Customers = (Customer[]) tmp[1];
-
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();

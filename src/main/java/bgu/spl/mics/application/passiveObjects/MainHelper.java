@@ -123,6 +123,7 @@ public class MainHelper {
             for (int j = 0; j < ListOrders.size(); j++) {
                 JsonElement CurrentOrder = ListOrders.get(j);
                 String BookTitle = CurrentOrder.getAsJsonObject().get("bookTitle").toString();
+                BookTitle = BookTitle.substring(1, BookTitle.length() - 1);
                 String tickInfo = CurrentOrder.getAsJsonObject().get("tick").toString();
                 int tick = Integer.parseInt(tickInfo);
                 BookOrderEvent CurrentEvent = new BookOrderEvent(Customers[i], BookTitle, tick);
