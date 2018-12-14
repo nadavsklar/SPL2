@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 public class MainHelper {
@@ -177,5 +178,15 @@ public class MainHelper {
         for (int i = 0; i < WorkersThreads.length; i++)
             WorkersThreads[i] = new Thread(Workers[i]);
         return WorkersThreads;
+    }
+
+    public static void printOutputs(Customer[] Customers, String customers, String books, String orderReceipts, String moveyRegister) {
+        HashMap<Integer, Customer> customerHashMap = new HashMap<>();
+        for (int i = 0; i < Customers.length; i++)
+            customerHashMap.put(Customers[i].getId(), Customers[i]);
+        Printer.SerializablePrinter(customerHashMap, customers);
+        Inventory.getInstance().printInventoryToFile(books);
+        MoneyRegister.getInstance().printOrderReceipts(orderReceipts);
+        Printer.SerializablePrinter(MoneyRegister.getInstance(), moveyRegister);
     }
 }

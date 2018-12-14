@@ -1,11 +1,10 @@
 package bgu.spl.mics.application;
-
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.*;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
+
 
 /** This is the Main class of the application. You should parse the input file,
  * create the different instances of the objects, and run the system.
@@ -29,7 +28,7 @@ public class BookStoreRunner {
 
         try {
 
-            Object obj = parser.parse(new FileReader("input.json"));
+            Object obj = parser.parse(new FileReader(args[0] + ".json"));
             JsonObject jsonObject = (JsonObject) obj;
 
             BooksInfo = MainHelper.InitBooks(jsonObject, BooksInfo);
@@ -67,6 +66,7 @@ public class BookStoreRunner {
             ie.printStackTrace();
         }
 
-        //Outputs
+        MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
+
     }
 }

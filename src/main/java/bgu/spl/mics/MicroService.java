@@ -1,6 +1,4 @@
 package bgu.spl.mics;
-import bgu.spl.mics.application.services.TimeService;
-
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -160,8 +158,7 @@ public abstract class MicroService implements Runnable {
     public final void run() {
         bus.register(this);
         initialize();
-        boolean isTimeService = (this instanceof TimeService);
-        while (!terminated & !isTimeService) {
+        while (!terminated) {
             try{
                 Message message = bus.awaitMessage(this);
                 Callbacks.get(message.getClass()).call(message);
