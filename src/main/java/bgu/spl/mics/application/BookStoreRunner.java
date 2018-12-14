@@ -63,29 +63,23 @@ public class BookStoreRunner {
 
         try {
             TimeThread.join();
-            /*for(int i = 0; i < Customers.length; i++){
+            for(int i = 0; i < Customers.length; i++){
                 Customer c = Customers[i];
                 Vector<OrderReceipt> orders = c.getCustomerReceiptList();
                 System.out.println("Name = " + c.getName());
                 System.out.print("Books = ");
                 Vector<OrderReceipt> tmp = new Vector<>();
-                for(OrderReceipt orderReceipt: orders){
-                    if(!tmp.contains(orderReceipt))
-                        tmp.add(orderReceipt);
-                    else
-                        orders.remove(orderReceipt);
-                }
                 for(int j = 0; j < orders.size(); j++)
                     System.out.print(orders.get(j).getBookTitle() + ", ");
                 System.out.println();
-            }*/
+            }
         }
         catch (InterruptedException ie) {
             ie.printStackTrace();
         }
 
 
-        MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
+//        MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
 
     }
 }

@@ -36,7 +36,7 @@ public class APIService extends MicroService{
 	    System.out.println(getName() + " Has initiated");
 
 		subscribeBroadcast(TickBroadcast.class, message -> {
-		    System.out.println(getName() + " Has received broadcast " + message.getClass());
+			System.out.println(getName() + " Has received broadcast " + message.getClass());
 
 		    Integer currentTimeTick = message.getCurrentTick();
 		    Vector<OrderReceipt> currentReceipts = new Vector<>();
@@ -52,12 +52,6 @@ public class APIService extends MicroService{
                         int distance = bookOrderEvent.getCustomer().getDistance();
                         System.out.println(getName() + " sending delivery event");
                         sendEvent(new DeliveryEvent(address, distance));
-                        for(OrderReceipt orderReceipt: currentReceipts){
-                        	if(!tmp.contains(orderReceipt))
-                        		tmp.add(orderReceipt);
-                        	else
-                        		currentReceipts.remove(orderReceipt);
-						}
                         bookOrderEvent.getCustomer().addOrderReceipt(currentReceipts);
                     }
                 }
