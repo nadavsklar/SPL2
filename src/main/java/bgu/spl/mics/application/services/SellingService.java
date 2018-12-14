@@ -57,8 +57,10 @@ public class SellingService extends MicroService{
                     complete(message, receipt);
                     //receipt.setIssuedTick();
 			}
-            else
-                complete(message, null);
+            else {
+                System.out.println("cannot do order");
+                complete(message, OrderResult.NOT_IN_STOCK);
+            }
 		});
 
         subscribeBroadcast(TerminateBroadcast.class, message -> {

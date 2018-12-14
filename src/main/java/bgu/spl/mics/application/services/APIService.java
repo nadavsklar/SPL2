@@ -1,14 +1,12 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BookOrderEvent;
 import bgu.spl.mics.application.messages.DeliveryEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
-import bgu.spl.mics.application.passiveObjects.Inventory;
-import bgu.spl.mics.application.passiveObjects.MoneyRegister;
-import bgu.spl.mics.application.passiveObjects.OrderReceipt;
-import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
+import bgu.spl.mics.application.passiveObjects.*;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -45,10 +43,9 @@ public class APIService extends MicroService{
 		    for (BookOrderEvent bookOrderEvent : Orders) {
 		        if (currentTimeTick.equals(bookOrderEvent.getTimeTick())) {
 		            System.out.println(getName() + " is sending book order event" );
-		            OrderReceipt currentResult = (OrderReceipt)sendEvent(bookOrderEvent).get();
-		            System.out.println(getName() + " has received Order receipt");
-		            if (currentResult != null) {
-                        currentReceipts.add(currentResult);
+                    Future currentResult = sendEvent(bookOrderEvent);
+                    if (currentResult.get() instanceof OrderReceipt) {
+                        currentReceipts.add((OrderReceipt)currentResult.get());
                         // TIME TICK
                         String address = bookOrderEvent.getCustomer().getAddress();
                         int distance = bookOrderEvent.getCustomer().getDistance();
@@ -57,7 +54,6 @@ public class APIService extends MicroService{
                     }
                 }
             }
-
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {

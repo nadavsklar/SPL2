@@ -27,7 +27,7 @@
         "distance":33,
         "creditCard":{"number":67890,"amount":88},
         "orderSchedule": [
-            {"bookTitle": "Harry Poter", "tick": 3},
+            {"bookTitle": "Harry Poter", "tick": 2},
             {"bookTitle": "The Hunger Games", "tick": 3}
           ]
       },
