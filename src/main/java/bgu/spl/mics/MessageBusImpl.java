@@ -1,7 +1,6 @@
 package bgu.spl.mics;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.*;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -11,12 +10,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class MessageBusImpl implements MessageBus {
 
 	private ConcurrentHashMap<Event, Future> Results;
-	private ConcurrentHashMap<Class<? extends Event>, List<MicroService>> Events;
-	private ConcurrentHashMap<Class<? extends Broadcast>, List<MicroService>> Brodcasts;
+	private ConcurrentHashMap<Class<? extends Event>, BlockingDeque<MicroService>> Events;
+	private ConcurrentHashMap<Class<? extends Broadcast>, BlockingDeque<MicroService>> Brodcasts;
 	private ConcurrentHashMap<MicroService, ConcurrentLinkedQueue<Message>> Missions;
 	private Object lockBrodcast = new Object();
 	private Object lockEvents = new Object();
-	private int roundRobinIndex;
 
 	private static class MessageBusHolder {
 		private static MessageBusImpl instance = new MessageBusImpl();
@@ -27,7 +25,6 @@ public class MessageBusImpl implements MessageBus {
 		Events = new ConcurrentHashMap<>();
 		Brodcasts = new ConcurrentHashMap<>();
 		Missions = new ConcurrentHashMap<>();
-		roundRobinIndex = 0;
 	}
 
 
@@ -40,8 +37,9 @@ public class MessageBusImpl implements MessageBus {
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		synchronized (lockEvents) {
 			if (!Events.containsKey(type))
-				Events.put(type, new LinkedList<>());
-			Events.get(type).add(m);
+				Events.put(type, new LinkedBlockingDeque<>());
+			Events.get(type).addFirst(m);
+            //System.out.println(m.getName() + " added to " + type);
 		}
 	}
 
@@ -50,7 +48,7 @@ public class MessageBusImpl implements MessageBus {
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
 		synchronized (lockBrodcast){
 			if (!Brodcasts.containsKey(type))
-				Brodcasts.put(type, new LinkedList<>());
+				Brodcasts.put(type, new LinkedBlockingDeque<>());
 			Brodcasts.get(type).add(m);
 		}
 	}
@@ -67,7 +65,7 @@ public class MessageBusImpl implements MessageBus {
 	public synchronized void sendBroadcast(Broadcast b) {
 		synchronized (lockBrodcast) {
 			if(Brodcasts.containsKey(b.getClass())){
-				List<MicroService> Services = Brodcasts.get(b.getClass());
+				BlockingDeque<MicroService> Services = Brodcasts.get(b.getClass());
 				for (MicroService m : Services)
 					Missions.get(m).add(b);
 				notifyAll();
@@ -80,14 +78,15 @@ public class MessageBusImpl implements MessageBus {
 	public synchronized <T> Future<T> sendEvent(Event<T> e) {
 		synchronized (lockEvents){
 			if(Events.containsKey(e.getClass())){
-				List<MicroService> Services = Events.get(e.getClass());
-				if (roundRobinIndex >= Services.size())
-					roundRobinIndex = 0;
-				MicroService m = Services.get(roundRobinIndex);
-				roundRobinIndex++;
-				Missions.get(m).add(e);
-				Results.put(e, new Future());
-				notifyAll();
+				BlockingDeque<MicroService> Services = Events.get(e.getClass());
+				if (!Services.isEmpty()) {
+                    MicroService m = Services.removeFirst();
+                    //System.out.println(m.getName());
+                    Missions.get(m).add(e);
+                    Results.put(e, new Future());
+                    Services.addLast(m);
+                    notifyAll();
+                }
 			}
 			return Results.get(e);
 		}
@@ -111,7 +110,7 @@ public class MessageBusImpl implements MessageBus {
         Iterator it = Map.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
-            List<MicroService> serviceList = (List<MicroService>)pair.getValue();
+            BlockingDeque<MicroService> serviceList = (BlockingDeque<MicroService>)pair.getValue();
             if (serviceList.contains(m))
                 serviceList.remove(m);
         }

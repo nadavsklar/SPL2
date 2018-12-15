@@ -74,4 +74,6 @@ public class MoneyRegister implements Serializable {
 	public void printOrderReceipts(String filename) {
 		Printer.SerializablePrinter(Receipts, filename);
 	}
+
+	//public List<OrderReceipt> getReceipts() { return this.Receipts; }
 }

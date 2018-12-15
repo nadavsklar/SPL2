@@ -34,11 +34,14 @@ public class SellingService extends MicroService{
 	protected void initialize() {
 
 		subscribeEvent(BookOrderEvent.class, message ->{
+		    //System.out.println(getName() + " has received book order");
             OrderReceipt receipt = new OrderReceipt();
             receipt.setProccesTick(TimeService.getCurrentTick());
+            //System.out.println(getName() + " is sending check book ");
             Future<Integer> price = sendEvent(new CheckAvailabilityBook(message.getBookTitle()));
             int priceValue = price.get();
 			if (priceValue >= 0 && message.getCustomer().getAvailableCreditAmount() >= priceValue) {
+			        //System.out.println(getName() + " is sending take book");
                     sendEvent(new TakeBook(message.getBookTitle()));
                     receipt.setBookTitle(message.getBookTitle());
                     receipt.setCustomerId(message.getCustomer().getId());
@@ -57,6 +60,7 @@ public class SellingService extends MicroService{
 		});
 
         subscribeBroadcast(TerminateBroadcast.class, message -> {
+            //System.out.println(getName() + " is terminating ");
             terminate();
         });
 		

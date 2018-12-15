@@ -58,16 +58,18 @@ public class Inventory {
      */
 	public synchronized OrderResult take (String book) {
 	    try {
-            if (amountsInInventory.get(book) > 0) {
-                int oldAmount = amountsInInventory.get(book);
-                amountsInInventory.replace(book, oldAmount, oldAmount - 1);
-                return OrderResult.SUCCESSFULLY_TAKEN;
-            } else
-                return OrderResult.NOT_IN_STOCK;
-        }
-        catch (Exception e) {
+	        if (amountsInInventory.get(book) > 0) {
+	            int oldAmount = amountsInInventory.get(book);
+	            amountsInInventory.replace(book, oldAmount, oldAmount - 1);
+	            notifyAll();
+	            return OrderResult.SUCCESSFULLY_TAKEN;
+	        } else {
+	            notifyAll();
+	            return OrderResult.NOT_IN_STOCK;
+	        }
+	    } catch (Exception e) {
 	        return null;
-        }
+	    }
 	}
 	
 	/**
@@ -98,4 +100,8 @@ public class Inventory {
 	public void printInventoryToFile(String filename){
 		Printer.SerializablePrinter(amountsInInventory, filename);
     }
+
+    /*public int getAmount(String book) {
+	    return this.amountsInInventory.get(book);
+    }*/
 }

@@ -43,6 +43,7 @@ public class TimeService extends MicroService{
                     sendBroadcast(new TerminateBroadcast());
                 }
                 else {
+                    //System.out.println(getName() + " sending tick broadcast ");
                     TickBroadcast TickBroadcast = new TickBroadcast(currentTick);
                     sendBroadcast(TickBroadcast);
                     currentTick++;
@@ -51,6 +52,7 @@ public class TimeService extends MicroService{
 		}, 0, speed);
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
+		    //System.out.println(getName() + " is terminating ");
             terminate();
         });
 	}

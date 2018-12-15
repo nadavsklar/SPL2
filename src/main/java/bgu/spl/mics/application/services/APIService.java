@@ -7,6 +7,8 @@ import bgu.spl.mics.application.messages.DeliveryEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.passiveObjects.*;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 import java.util.List;
 import java.util.Vector;
 
@@ -33,8 +35,9 @@ public class APIService extends MicroService{
 
 	@Override
 	protected void initialize() {
-
+        //System.out.println(getName() + " has initiated ");
 		subscribeBroadcast(TickBroadcast.class, message -> {
+		    //System.out.println(getName() + " has received tick broadcast ");
             List<Future> results = new Vector<>();
 
 		    Integer currentTimeTick = message.getCurrentTick();
@@ -42,6 +45,7 @@ public class APIService extends MicroService{
 
 		    for (BookOrderEvent bookOrderEvent : Orders) {
 		        if (currentTimeTick.equals(bookOrderEvent.getTimeTick())) {
+		            //System.out.println(getName() + " is sending book order event");
                     Future currentResult = sendEvent(bookOrderEvent);
                     results.add(currentResult);
                 }
@@ -54,6 +58,7 @@ public class APIService extends MicroService{
                     currentReceipts.add(currentReceipt);
                     String address = customer.getAddress();
                     int distance = customer.getDistance();
+                    //System.out.println(getName() + " is sending delivery event");
                     sendEvent(new DeliveryEvent(address, distance));
 
                     customer.addOrderReceipt(currentReceipts);
@@ -62,7 +67,8 @@ public class APIService extends MicroService{
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-		    terminate();
+            //System.out.println(getName() + " is terminating");
+            terminate();
         });
 	}
 

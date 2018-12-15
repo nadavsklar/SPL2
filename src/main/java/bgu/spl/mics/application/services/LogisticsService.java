@@ -27,15 +27,20 @@ public class LogisticsService extends MicroService {
 	@Override
 	protected void initialize() {
 		subscribeEvent(DeliveryEvent.class, message -> {
+			//System.out.println(getName() + " has received delivery event");
+			//System.out.println(getName() + " is sending check vehicle ");
 			Future<Future<DeliveryVehicle>> FutureVehicle = sendEvent(new CheckAvailabilityVehicle());
-			DeliveryVehicle Vehicle = FutureVehicle.get().get();
-			Vehicle.deliver(message.getAddress(), message.getDistance());
-			sendEvent(new ReleaseVehicle(Vehicle));
-
+			if (FutureVehicle.get().get() instanceof DeliveryVehicle) {
+				DeliveryVehicle Vehicle = FutureVehicle.get().get();
+				Vehicle.deliver(message.getAddress(), message.getDistance());
+				//System.out.println(getName() + " is sending release vehicle");
+				sendEvent(new ReleaseVehicle(Vehicle));
+			}
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-            terminate();
+			//System.out.println(getName() + " is terminating");
+			terminate();
 		});
 		
 	}

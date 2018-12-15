@@ -3,9 +3,10 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.*;
-import java.io.*;
-import java.util.Vector;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
+import java.io.*;
+import java.util.HashMap;
 
 /** This is the Main class of the application. You should parse the input file,
  * create the different instances of the objects, and run the system.
@@ -52,7 +53,8 @@ public class BookStoreRunner {
         Inventory.getInstance().load(BooksInfo);
         ResourcesHolder.getInstance().load(VehiclesInfo);
         MicroService[] Workers = MainHelper.initiateWorkers(SellingServices, InventoryServices, LogisticServices, ResourceServices, APIServices);
-
+        //for (int i = 0; i < Workers.length; i++)
+            //System.out.println(Workers[i].getName());
         Thread[] WorkersThreads = MainHelper.initiateThreads(Workers);
         for (Thread thread : WorkersThreads)
             thread.start();
@@ -69,5 +71,23 @@ public class BookStoreRunner {
 
         MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
 
+        /*for (int i = 0; i < Customers.length; i++) {
+            System.out.println(Customers[i].getName());
+            System.out.println(Customers[i].getAvailableCreditAmount());
+        }
+
+        for (int i = 0; i < BooksInfo.length; i++) {
+            System.out.println(BooksInfo[i].getBookTitle() + " " + Inventory.getInstance().getAmount(BooksInfo[i].getBookTitle()));
+        }
+
+        for (int i = 0; i < MoneyRegister.getInstance().getReceipts().size(); i++) {
+            OrderReceipt curr = MoneyRegister.getInstance().getReceipts().get(i);
+            System.out.println(curr.getCustomerId() + " " + curr.getOrderTick() + " " + curr.getBookTitle() + " " + curr
+            .getSeller());
+        }
+
+        System.out.println(MoneyRegister.getInstance().getTotalEarnings());*/
+
     }
+
 }

@@ -76,10 +76,16 @@ public class ResourcesHolder {
      * @param vehicles	Array of {@link DeliveryVehicle} instances to store.
      */
 	public void load(DeliveryVehicle[] vehicles) {
-        availableVehicles.clear();
-		for (int i = 0; i < vehicles.length; i++)
-            availableVehicles.add(vehicles[i]);
-		sem = new Semaphore(vehicles.length);
+	    if (vehicles != null) {
+            availableVehicles.clear();
+            for (int i = 0; i < vehicles.length; i++)
+                availableVehicles.add(vehicles[i]);
+            sem = new Semaphore(vehicles.length);
+        }
+        else {
+            while (!notResolved.isEmpty())
+                notResolved.poll().resolve(OrderResult.NOT_IN_STOCK);
+        }
 	}
 
 }
