@@ -28,17 +28,15 @@ public class ResourceService extends MicroService{
 	@Override
 	protected void initialize() {
 		subscribeEvent(CheckAvailabilityVehicle.class, message ->{
-            //System.out.println(getName() + " aquiring vehicle ");
 			DeliveryVehicle Vehicle = Resources.acquireVehicle().get();
 			complete(message, Vehicle);
 		});
-		subscribeEvent(ReleaseVehicle.class, message->{
-		    //System.out.println(getName() + " releasing vehicle ");
+		subscribeEvent(ReleaseVehicle.class, message-> {
 			Resources.releaseVehicle(message.getVehicle());
+			complete(message, message.getVehicle());
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-            //System.out.println(getName() + " is terminating ");
             terminate();
 		});
 		

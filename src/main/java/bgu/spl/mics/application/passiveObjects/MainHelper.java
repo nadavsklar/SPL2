@@ -12,9 +12,9 @@ import java.util.Vector;
 
 public class MainHelper {
 
-    public static BookInventoryInfo[] InitBooks(JsonObject jsonObject, BookInventoryInfo[] BooksInfo){
+    public static BookInventoryInfo[] InitBooks(JsonObject jsonObject){
         JsonArray Books = jsonObject.getAsJsonArray("initialInventory");
-        BooksInfo = new BookInventoryInfo[Books.size()];
+        BookInventoryInfo[] BooksInfo = new BookInventoryInfo[Books.size()];
 
         for (int i = 0; i < Books.size(); i++) {
             String bookInfo = Books.get(i).toString();
@@ -34,12 +34,12 @@ public class MainHelper {
         return BooksInfo;
     }
 
-    public static DeliveryVehicle[] InitVehicles(JsonObject jsonObject, DeliveryVehicle[] VehiclesInfo){
+    public static DeliveryVehicle[] InitVehicles(JsonObject jsonObject){
         JsonElement Vehicles = jsonObject.getAsJsonArray("initialResources").get(0).getAsJsonObject();
         JsonElement temp = ((JsonObject) Vehicles).get("vehicles");
         JsonArray VehiclesArray = temp.getAsJsonArray();
 
-        VehiclesInfo = new DeliveryVehicle[VehiclesArray.size()];
+        DeliveryVehicle[] VehiclesInfo = new DeliveryVehicle[VehiclesArray.size()];
 
         for (int i = 0; i < VehiclesArray.size(); i++) {
             String licenseInfo = VehiclesArray.get(i).getAsJsonObject().get("license").toString();
@@ -51,7 +51,7 @@ public class MainHelper {
         return VehiclesInfo;
     }
 
-    public static TimeService InitTimerService(JsonObject jsonObject, TimeService TimerService){
+    public static TimeService InitTimerService(JsonObject jsonObject){
         JsonElement Time = jsonObject.getAsJsonObject("services").get("time");
         String TimeInfo = Time.toString();
         String speedInfo = TimeInfo.substring(TimeInfo.indexOf(':') + 1, TimeInfo.indexOf(','));
@@ -59,51 +59,51 @@ public class MainHelper {
         String durationInfo = TimeInfo.substring(TimeInfo.indexOf(':') + 1, TimeInfo.indexOf('}'));
         int speed = Integer.parseInt(speedInfo);
         int duration = Integer.parseInt(durationInfo);
-        TimerService = new TimeService("Timer", speed, duration);
+        TimeService TimerService = new TimeService("Timer", speed, duration);
         return TimerService;
     }
 
-    public static SellingService[] InitSellingServices(JsonObject jsonObject, SellingService[] SellingServices){
+    public static SellingService[] InitSellingServices(JsonObject jsonObject){
         JsonElement SellingAmount = jsonObject.getAsJsonObject("services").get("selling");
         int size = Integer.parseInt(SellingAmount.toString());
-        SellingServices = new SellingService[size];
+        SellingService[] SellingServices = new SellingService[size];
         for(int i = 0; i < SellingServices.length; i++)
             SellingServices[i] = new SellingService("Seller " + i);
         return SellingServices;
     }
 
-    public static InventoryService[] InitInventoryServices(JsonObject jsonObject, InventoryService[] InventoryServices){
+    public static InventoryService[] InitInventoryServices(JsonObject jsonObject){
         JsonElement InventoryAmount = jsonObject.getAsJsonObject("services").get("inventoryService");
         int size = Integer.parseInt(InventoryAmount.toString());
-        InventoryServices = new InventoryService[size];
+        InventoryService[] InventoryServices = new InventoryService[size];
         for(int i = 0; i < InventoryServices.length; i++)
             InventoryServices[i] = new InventoryService("Inventory Handler " + i);
         return InventoryServices;
     }
 
-    public static LogisticsService[] InitLogisticServices(JsonObject jsonObject, LogisticsService[] LogisticServices){
+    public static LogisticsService[] InitLogisticServices(JsonObject jsonObject){
         JsonElement LogisticAmount = jsonObject.getAsJsonObject("services").get("logistics");
         int size = Integer.parseInt(LogisticAmount.toString());
-        LogisticServices = new LogisticsService[size];
+        LogisticsService[] LogisticServices = new LogisticsService[size];
         for(int i = 0; i < LogisticServices.length; i++)
             LogisticServices[i] = new LogisticsService("Logistic Handler " + i);
         return LogisticServices;
     }
 
-    public static ResourceService[] InitResourceServices(JsonObject jsonObject, ResourceService[] ResourceServices){
+    public static ResourceService[] InitResourceServices(JsonObject jsonObject){
         JsonElement ResourceAmount = jsonObject.getAsJsonObject("services").get("resourcesService");
         int size = Integer.parseInt(ResourceAmount.toString());
-        ResourceServices = new ResourceService[size];
+        ResourceService[] ResourceServices = new ResourceService[size];
         for(int i = 0; i < ResourceServices.length; i++)
             ResourceServices[i] = new ResourceService("Resource Handler " + i);
         return ResourceServices;
     }
 
-    public static Object[][] InitAPIServices(JsonObject jsonObject, APIService[] APIServices, Customer[] Customers){
+    public static Object[][] InitAPIServices(JsonObject jsonObject){
         JsonArray CustomersArray = jsonObject.getAsJsonObject("services").getAsJsonArray("customers");
         int size = CustomersArray.size();
-        Customers = new Customer[size];
-        APIServices = new APIService[size];
+        Customer[] Customers = new Customer[size];
+        APIService[] APIServices = new APIService[size];
         for(int i = 0; i < Customers.length; i++){
             JsonElement CurrentCustomer = CustomersArray.get(i);
             String idInfo = CurrentCustomer.getAsJsonObject().get("id").toString();

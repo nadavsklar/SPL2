@@ -50,6 +50,7 @@ public class ResourcesHolder {
         }
         Future<DeliveryVehicle> dv = new Future<>();
 	    dv.resolve(availableVehicles.get(0));
+	    availableVehicles.remove(availableVehicles.get(0));
 		return dv;
 	}
 	
@@ -60,7 +61,7 @@ public class ResourcesHolder {
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
-        sem.release(1);
+        sem.release();
         availableVehicles.add(vehicle);
 	}
 	

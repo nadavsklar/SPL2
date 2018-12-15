@@ -63,9 +63,8 @@ public class MoneyRegister implements Serializable {
      * <p>
      * @param amount 	amount to charge
      */
-	public synchronized void chargeCreditCard(Customer c, int amount) {
+	public void chargeCreditCard(Customer c, int amount) {
 		c.setAvailableAmountInCreditCard(amount);
-		notifyAll();
 	}
 	
 	/**

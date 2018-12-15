@@ -29,18 +29,18 @@ public class BookStoreRunner {
 
         try {
 
-            //Object obj = parser.parse(new FileReader(args[0] + ".json"));
-            Object obj = parser.parse((new FileReader(("input.json"))));
+            Object obj = parser.parse(new FileReader(args[0] + ".json"));
+            //Object obj = parser.parse((new FileReader(("input.json"))));
             JsonObject jsonObject = (JsonObject) obj;
 
-            BooksInfo = MainHelper.InitBooks(jsonObject, BooksInfo);
-            VehiclesInfo = MainHelper.InitVehicles(jsonObject, VehiclesInfo);
-            TimerService = MainHelper.InitTimerService(jsonObject, TimerService);
-            SellingServices = MainHelper.InitSellingServices(jsonObject, SellingServices);
-            InventoryServices = MainHelper.InitInventoryServices(jsonObject, InventoryServices);
-            LogisticServices = MainHelper.InitLogisticServices(jsonObject, LogisticServices);
-            ResourceServices = MainHelper.InitResourceServices(jsonObject, ResourceServices);
-            Object[][] tmp = MainHelper.InitAPIServices(jsonObject, APIServices, Customers);
+            BooksInfo = MainHelper.InitBooks(jsonObject);
+            VehiclesInfo = MainHelper.InitVehicles(jsonObject);
+            TimerService = MainHelper.InitTimerService(jsonObject);
+            SellingServices = MainHelper.InitSellingServices(jsonObject);
+            InventoryServices = MainHelper.InitInventoryServices(jsonObject);
+            LogisticServices = MainHelper.InitLogisticServices(jsonObject);
+            ResourceServices = MainHelper.InitResourceServices(jsonObject);
+            Object[][] tmp = MainHelper.InitAPIServices(jsonObject);
             APIServices = (APIService[]) tmp[0];
             Customers = (Customer[]) tmp[1];
         }
@@ -73,15 +73,12 @@ public class BookStoreRunner {
                 System.out.println();
                 System.out.println(Customers[i].getAvailableCreditAmount());
             }
-
-            System.out.println(MoneyRegister.getInstance().getTotalEarnings());
         }
         catch (InterruptedException ie) {
             ie.printStackTrace();
         }
 
-
-//        MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
+        MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
 
     }
 }

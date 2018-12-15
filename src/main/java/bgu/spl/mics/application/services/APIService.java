@@ -55,7 +55,7 @@ public class APIService extends MicroService{
                     OrderReceipt currentReceipt = (OrderReceipt) currentResult.get();
                     currentReceipt.setOrderTick(currentTimeTick);
                     currentReceipts.add(currentReceipt);
-                    System.out.println(currentReceipt.getBookTitle() + " added to " + customer.getName());
+                    //System.out.println(currentReceipt.getBookTitle() + " added to " + customer.getName());
                     String address = customer.getAddress();
                     int distance = customer.getDistance();
                     //System.out.println(getName() + " sending delivery event");
