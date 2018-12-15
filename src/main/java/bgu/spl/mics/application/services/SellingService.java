@@ -36,11 +36,9 @@ public class SellingService extends MicroService{
 		subscribeEvent(BookOrderEvent.class, message ->{
             OrderReceipt receipt = new OrderReceipt();
             receipt.setProccesTick(TimeService.getCurrentTick());
-            System.out.println(getName() + " sending check book event ");
             Future<Integer> price = sendEvent(new CheckAvailabilityBook(message.getBookTitle()));
             int priceValue = price.get();
 			if (priceValue >= 0 && message.getCustomer().getAvailableCreditAmount() >= priceValue) {
-			        System.out.println(getName() + " sending take book event ");
                     sendEvent(new TakeBook(message.getBookTitle()));
                     receipt.setBookTitle(message.getBookTitle());
                     receipt.setCustomerId(message.getCustomer().getId());

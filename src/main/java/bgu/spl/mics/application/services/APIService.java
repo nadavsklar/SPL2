@@ -33,10 +33,8 @@ public class APIService extends MicroService{
 
 	@Override
 	protected void initialize() {
-	    System.out.println(getName() + " Has initiated");
 
 		subscribeBroadcast(TickBroadcast.class, message -> {
-			System.out.println(getName() + " Has received broadcast " + message.getClass());
             List<Future> results = new Vector<>();
 
 		    Integer currentTimeTick = message.getCurrentTick();
@@ -44,7 +42,6 @@ public class APIService extends MicroService{
 
 		    for (BookOrderEvent bookOrderEvent : Orders) {
 		        if (currentTimeTick.equals(bookOrderEvent.getTimeTick())) {
-		            System.out.println(getName() + " is sending book order event" );
                     Future currentResult = sendEvent(bookOrderEvent);
                     results.add(currentResult);
                 }
@@ -55,10 +52,8 @@ public class APIService extends MicroService{
                     OrderReceipt currentReceipt = (OrderReceipt) currentResult.get();
                     currentReceipt.setOrderTick(currentTimeTick);
                     currentReceipts.add(currentReceipt);
-                    System.out.println(currentReceipt.getBookTitle() + " added to " + customer.getName());
                     String address = customer.getAddress();
                     int distance = customer.getDistance();
-                    System.out.println(getName() + " sending delivery event");
                     sendEvent(new DeliveryEvent(address, distance));
 
                     customer.addOrderReceipt(currentReceipts);
@@ -67,7 +62,6 @@ public class APIService extends MicroService{
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-		    System.out.println(getName() + " is terminating ");
 		    terminate();
         });
 	}

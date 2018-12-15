@@ -62,16 +62,6 @@ public class BookStoreRunner {
 
         try {
             TimeThread.join();
-            for(int i = 0; i < Customers.length; i++){
-                Customer c = Customers[i];
-                Vector<OrderReceipt> orders = c.getCustomerReceiptList();
-                System.out.println("Name = " + c.getName());
-                System.out.print("Books = ");
-                for(int j = 0; j < orders.size(); j++)
-                    System.out.print(orders.get(j).getBookTitle() + ", ");
-                System.out.println();
-                System.out.println(Customers[i].getAvailableCreditAmount());
-            }
         }
         catch (InterruptedException ie) {
             ie.printStackTrace();
