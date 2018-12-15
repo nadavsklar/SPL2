@@ -18,7 +18,7 @@ public class ResourcesHolder {
 
 	private ConcurrentLinkedQueue<DeliveryVehicle> availableVehicles;
 	private Semaphore sem;
-	//private ConcurrentLinkedQueue<Future> notResolved;
+	private ConcurrentLinkedQueue<Future> notResolved;
 
 	/**
      * Retrieves the single instance of this class.
@@ -29,7 +29,7 @@ public class ResourcesHolder {
 
 	private ResourcesHolder() {
 		availableVehicles = new ConcurrentLinkedQueue<>();
-		//notResolved = new ConcurrentLinkedQueue<>();
+		notResolved = new ConcurrentLinkedQueue<>();
 	}
 
 
@@ -51,14 +51,22 @@ public class ResourcesHolder {
         else
             notResolved.add(dv);
         return dv;*/
-        try {
+        /*try {
             sem.acquire();
         }
         catch (InterruptedException ie) {
             ie.printStackTrace();
         }
+        System.out.println("Resource holder aquired");
         Future<DeliveryVehicle> dv = new Future<>();
         dv.resolve(availableVehicles.poll());
+        return dv;*/
+
+        Future<DeliveryVehicle> dv = new Future<>();
+        if (sem.tryAcquire())
+            dv.resolve(availableVehicles.poll());
+        else
+            notResolved.add(dv);
         return dv;
 	}
 	
@@ -77,8 +85,15 @@ public class ResourcesHolder {
             sem.release();
             availableVehicles.add(vehicle);
         }*/
-        availableVehicles.add(vehicle);
-        sem.release();
+        //System.out.println("Resource holder realesed");
+        if (!notResolved.isEmpty()) {
+            Future<DeliveryVehicle> dv = notResolved.poll();
+            dv.resolve(vehicle);
+        }
+        else {
+            sem.release();
+            availableVehicles.add(vehicle);
+        }
 	}
 	
 	/**
