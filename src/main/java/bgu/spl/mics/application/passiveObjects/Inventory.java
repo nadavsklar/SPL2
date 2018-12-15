@@ -61,12 +61,9 @@ public class Inventory {
             if (amountsInInventory.get(book) > 0) {
                 int oldAmount = amountsInInventory.get(book);
                 amountsInInventory.replace(book, oldAmount, oldAmount - 1);
-                notifyAll();
                 return OrderResult.SUCCESSFULLY_TAKEN;
-            } else {
-                notifyAll();
+            } else
                 return OrderResult.NOT_IN_STOCK;
-            }
         }
         catch (Exception e) {
 	        return null;
@@ -79,7 +76,7 @@ public class Inventory {
      * @param book 		Name of the book.
      * @return the price of the book if it is available, -1 otherwise.
      */
-	public int checkAvailabiltyAndGetPrice(String book) {
+	public synchronized int checkAvailabiltyAndGetPrice(String book) {
         try {
             if (amountsInInventory.get(book) > 0)
                 return prices.get(book);

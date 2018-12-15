@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 import bgu.spl.mics.Future;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -15,8 +16,9 @@ import java.util.concurrent.Semaphore;
 
 public class ResourcesHolder {
 
-	private Vector<DeliveryVehicle> availableVehicles;
-	private Semaphore sem;
+	private ConcurrentLinkedQueue<DeliveryVehicle> availableVehicles;
+	//private Semaphore sem;
+	private ConcurrentLinkedQueue<Future> notResolved;
 
 	/**
      * Retrieves the single instance of this class.
@@ -26,7 +28,8 @@ public class ResourcesHolder {
 	}
 
 	private ResourcesHolder() {
-		availableVehicles = new Vector<>();
+		availableVehicles = new ConcurrentLinkedQueue<>();
+		notResolved = new ConcurrentLinkedQueue<>();
 	}
 
 
@@ -41,17 +44,15 @@ public class ResourcesHolder {
      * @return 	{@link Future<DeliveryVehicle>} object which will resolve to a 
      * 			{@link DeliveryVehicle} when completed.   
      */
-	public Future<DeliveryVehicle> acquireVehicle() {
-	    try {
-            sem.acquire();
-        }
-        catch (InterruptedException ie) {
-	        ie.printStackTrace();
-        }
+	public synchronized Future<DeliveryVehicle> acquireVehicle() {
         Future<DeliveryVehicle> dv = new Future<>();
-	    dv.resolve(availableVehicles.get(0));
-	    availableVehicles.remove(availableVehicles.get(0));
-		return dv;
+        if (!availableVehicles.isEmpty()) { // there is ready car
+            dv.resolve(availableVehicles.poll());
+            //availableVehicles.remove(availableVehicles.get(0));
+        }
+        else
+            notResolved.add(dv);
+        return dv;
 	}
 	
 	/**
@@ -60,9 +61,15 @@ public class ResourcesHolder {
      * <p>
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
-	public void releaseVehicle(DeliveryVehicle vehicle) {
-        sem.release();
-        availableVehicles.add(vehicle);
+	public synchronized void releaseVehicle(DeliveryVehicle vehicle) {
+        //sem.release();
+        if (!notResolved.isEmpty()) {
+            Future<DeliveryVehicle> dv = notResolved.poll();
+            dv.resolve(vehicle);
+        }
+        else {
+            availableVehicles.add(vehicle);
+        }
 	}
 	
 	/**
@@ -74,7 +81,7 @@ public class ResourcesHolder {
         availableVehicles.clear();
 		for (int i = 0; i < vehicles.length; i++)
             availableVehicles.add(vehicles[i]);
-		sem = new Semaphore(vehicles.length);
+		//sem = new Semaphore(vehicles.length);
 	}
 
 }
