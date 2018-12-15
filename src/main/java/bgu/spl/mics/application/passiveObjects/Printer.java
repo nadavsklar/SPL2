@@ -8,14 +8,14 @@ public class Printer {
 
     public static void SerializablePrinter(Object o, String filename){
         try {
-            FileOutputStream outputStream = new FileOutputStream(filename + ".ser");
+            FileOutputStream outputStream = new FileOutputStream(filename, true);
             ObjectOutputStream out = new ObjectOutputStream(outputStream);
             out.writeObject(o);
             out.close();
             outputStream.close();
         }
         catch (IOException e) {
-            throw new RuntimeException("Error printing file");
+            e.printStackTrace();
         }
     }
 }

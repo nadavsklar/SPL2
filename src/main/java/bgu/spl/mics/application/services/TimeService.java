@@ -35,7 +35,7 @@ public class TimeService extends MicroService{
 
 	@Override
 	protected void initialize() {
-		SystemTimer.scheduleAtFixedRate(new TimerTask() {
+		SystemTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
                 if (duration == currentTick) {
@@ -48,7 +48,7 @@ public class TimeService extends MicroService{
                     currentTick++;
                 }
 			}
-		}, speed, duration * speed);
+		}, 0, speed);
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
             terminate();

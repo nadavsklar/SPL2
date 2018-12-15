@@ -29,8 +29,7 @@ public class BookStoreRunner {
 
         try {
 
-            Object obj = parser.parse(new FileReader(args[0] + ".json"));
-            //Object obj = parser.parse((new FileReader(("input.json"))));
+            Object obj = parser.parse(new FileReader(args[0]));
             JsonObject jsonObject = (JsonObject) obj;
 
             BooksInfo = MainHelper.InitBooks(jsonObject);
