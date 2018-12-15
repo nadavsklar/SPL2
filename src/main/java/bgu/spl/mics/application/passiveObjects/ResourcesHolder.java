@@ -17,8 +17,8 @@ import java.util.concurrent.Semaphore;
 public class ResourcesHolder {
 
 	private ConcurrentLinkedQueue<DeliveryVehicle> availableVehicles;
-	//private Semaphore sem;
-	private ConcurrentLinkedQueue<Future> notResolved;
+	private Semaphore sem;
+	//private ConcurrentLinkedQueue<Future> notResolved;
 
 	/**
      * Retrieves the single instance of this class.
@@ -29,7 +29,7 @@ public class ResourcesHolder {
 
 	private ResourcesHolder() {
 		availableVehicles = new ConcurrentLinkedQueue<>();
-		notResolved = new ConcurrentLinkedQueue<>();
+		//notResolved = new ConcurrentLinkedQueue<>();
 	}
 
 
@@ -44,14 +44,21 @@ public class ResourcesHolder {
      * @return 	{@link Future<DeliveryVehicle>} object which will resolve to a 
      * 			{@link DeliveryVehicle} when completed.   
      */
-	public synchronized Future<DeliveryVehicle> acquireVehicle() {
-        Future<DeliveryVehicle> dv = new Future<>();
-        if (!availableVehicles.isEmpty()) { // there is ready car
+	public Future<DeliveryVehicle> acquireVehicle() {
+        /*Future<DeliveryVehicle> dv = new Future<>();
+        if (sem.tryAcquire())  // there is ready car
             dv.resolve(availableVehicles.poll());
-            //availableVehicles.remove(availableVehicles.get(0));
-        }
         else
             notResolved.add(dv);
+        return dv;*/
+        try {
+            sem.acquire();
+        }
+        catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
+        Future<DeliveryVehicle> dv = new Future<>();
+        dv.resolve(availableVehicles.poll());
         return dv;
 	}
 	
@@ -61,15 +68,17 @@ public class ResourcesHolder {
      * <p>
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
-	public synchronized void releaseVehicle(DeliveryVehicle vehicle) {
-        //sem.release();
-        if (!notResolved.isEmpty()) {
+	public void releaseVehicle(DeliveryVehicle vehicle) {
+        /*if (!notResolved.isEmpty()) {
             Future<DeliveryVehicle> dv = notResolved.poll();
             dv.resolve(vehicle);
         }
         else {
+            sem.release();
             availableVehicles.add(vehicle);
-        }
+        }*/
+        availableVehicles.add(vehicle);
+        sem.release();
 	}
 	
 	/**
@@ -81,7 +90,7 @@ public class ResourcesHolder {
         availableVehicles.clear();
 		for (int i = 0; i < vehicles.length; i++)
             availableVehicles.add(vehicles[i]);
-		//sem = new Semaphore(vehicles.length);
+		sem = new Semaphore(vehicles.length);
 	}
 
 }

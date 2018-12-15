@@ -30,11 +30,10 @@ public class ResourceService extends MicroService{
 	protected void initialize() {
 		subscribeEvent(CheckAvailabilityVehicle.class, message ->{
 			Future<DeliveryVehicle> FutureVehicle = Resources.acquireVehicle();
-			complete(message, FutureVehicle);
+			complete(message, FutureVehicle.get());
 		});
 		subscribeEvent(ReleaseVehicle.class, message-> {
 			Resources.releaseVehicle(message.getVehicle());
-			complete(message, message.getVehicle());
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
