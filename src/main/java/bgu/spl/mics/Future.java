@@ -34,7 +34,6 @@ public class Future<T> {
 		try{
 			while(result == null) {
 				wait();
-				System.out.println("Waiting for Vehicle");
 			}
 		}
 		catch (InterruptedException e){

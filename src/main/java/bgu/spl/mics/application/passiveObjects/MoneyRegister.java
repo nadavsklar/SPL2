@@ -45,9 +45,10 @@ public class MoneyRegister implements Serializable {
      * <p>   
      * @param r		The receipt to save in the money register.
      */
-	public void file (OrderReceipt r) {
+	public synchronized void file (OrderReceipt r) {
 		Receipts.add(r);
 		totalEarnings = totalEarnings + r.getPrice();
+		notifyAll();
 	}
 	
 	/**
@@ -62,8 +63,9 @@ public class MoneyRegister implements Serializable {
      * <p>
      * @param amount 	amount to charge
      */
-	public void chargeCreditCard(Customer c, int amount) {
+	public synchronized void chargeCreditCard(Customer c, int amount) {
 		c.setAvailableAmountInCreditCard(amount);
+		notifyAll();
 	}
 	
 	/**

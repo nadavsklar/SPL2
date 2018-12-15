@@ -87,6 +87,10 @@ public class Customer implements Serializable {
 		availableAmountInCreditCard = availableAmountInCreditCard - toCharge;
 	}
 
-	public void addOrderReceipt(Vector<OrderReceipt> Orders){Receipts.addAll(Orders);}
+	public void addOrderReceipt(Vector<OrderReceipt> Orders){
+		for (int i = 0; i < Orders.size(); i++)
+			if (!Receipts.contains(Orders.get(i)))
+				Receipts.add(Orders.get(i));
+	}
 	
 }

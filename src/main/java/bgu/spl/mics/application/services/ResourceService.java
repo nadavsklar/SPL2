@@ -9,7 +9,7 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  * ResourceService is in charge of the store resources - the delivery vehicles.
- * Holds a reference to the {@link ResourceHolder} singleton of the store.
+ * Holds a reference to the {@link ResourcesHolder} singleton of the store.
  * This class may not hold references for objects which it is not responsible for:
  * {@link MoneyRegister}, {@link Inventory}.
  * 
@@ -28,17 +28,17 @@ public class ResourceService extends MicroService{
 	@Override
 	protected void initialize() {
 		subscribeEvent(CheckAvailabilityVehicle.class, message ->{
-            System.out.println(getName() + " aquiring vehicle ");
+            //System.out.println(getName() + " aquiring vehicle ");
 			DeliveryVehicle Vehicle = Resources.acquireVehicle().get();
 			complete(message, Vehicle);
 		});
 		subscribeEvent(ReleaseVehicle.class, message->{
-		    System.out.println(getName() + " releasing vehicle ");
+		    //System.out.println(getName() + " releasing vehicle ");
 			Resources.releaseVehicle(message.getVehicle());
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-            System.out.println(getName() + " is terminating ");
+            //System.out.println(getName() + " is terminating ");
             terminate();
 		});
 		

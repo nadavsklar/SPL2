@@ -32,7 +32,7 @@ public class InventoryService extends MicroService{
 	protected void initialize() {
 
 	    subscribeEvent(CheckAvailabilityBook.class, iv -> {
-	        System.out.println(getName() + " checking availability " + iv.getBook());
+	        //System.out.println(getName() + " checking availability " + iv.getBook());
 	        int price = inventory.checkAvailabiltyAndGetPrice(iv.getBook());
 	        complete(iv, price);
         });
@@ -44,7 +44,7 @@ public class InventoryService extends MicroService{
         });
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-            System.out.println(getName() + " is terminating ");
+           // System.out.println(getName() + " is terminating ");
             terminate();
 		});
 

@@ -68,11 +68,13 @@ public class BookStoreRunner {
                 Vector<OrderReceipt> orders = c.getCustomerReceiptList();
                 System.out.println("Name = " + c.getName());
                 System.out.print("Books = ");
-                Vector<OrderReceipt> tmp = new Vector<>();
                 for(int j = 0; j < orders.size(); j++)
                     System.out.print(orders.get(j).getBookTitle() + ", ");
                 System.out.println();
+                System.out.println(Customers[i].getAvailableCreditAmount());
             }
+
+            System.out.println(MoneyRegister.getInstance().getTotalEarnings());
         }
         catch (InterruptedException ie) {
             ie.printStackTrace();

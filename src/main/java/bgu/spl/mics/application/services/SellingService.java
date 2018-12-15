@@ -35,15 +35,14 @@ public class SellingService extends MicroService{
 
 		subscribeEvent(BookOrderEvent.class, message ->{
             OrderReceipt receipt = new OrderReceipt();
-            //receipt.setOrderTick(message.getTimeTick());
-            //receipt.setProccesTick(message.getTimeTick());
-            System.out.println(getName() + " sending check avalibility book ");
+            receipt.setProccesTick(TimeService.getCurrentTick());
+            //System.out.println(getName() + " sending check avalibility book ");
             Future<Integer> price = sendEvent(new CheckAvailabilityBook(message.getBookTitle()));
             int priceValue = price.get();
-            System.out.println("Price = " + priceValue);
-            System.out.println("Amount = " + message.getCustomer().getAvailableCreditAmount());
+            //System.out.println("Price = " + priceValue);
+            //System.out.println("Amount = " + message.getCustomer().getAvailableCreditAmount());
 			if (priceValue >= 0 && message.getCustomer().getAvailableCreditAmount() >= priceValue) {
-			    System.out.println(getName() + " sending taking book ");
+			    //System.out.println(getName() + " sending taking book ");
                     sendEvent(new TakeBook(message.getBookTitle()));
                     receipt.setBookTitle(message.getBookTitle());
                     receipt.setCustomerId(message.getCustomer().getId());
@@ -52,18 +51,20 @@ public class SellingService extends MicroService{
                     receipt.setOrderId(OrdersId.getCurrentOrderId());
                     OrdersId.nextOrder();
                     MoneyRegister.file(receipt);
+                    System.out.println(receipt.getPrice());
+                    System.out.println(message.getCustomer().getAvailableCreditAmount());
                     MoneyRegister.chargeCreditCard(message.getCustomer(), receipt.getPrice());
+                    receipt.setIssuedTick(TimeService.getCurrentTick());
                     complete(message, receipt);
-                    //receipt.setIssuedTick();
 			}
             else {
-                System.out.println("cannot do order");
+                //System.out.println("cannot do order");
                 complete(message, OrderResult.NOT_IN_STOCK);
             }
 		});
 
         subscribeBroadcast(TerminateBroadcast.class, message -> {
-            System.out.println(getName() + " is terminating ");
+            //System.out.println(getName() + " is terminating ");
             terminate();
         });
 		

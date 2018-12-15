@@ -28,19 +28,19 @@ public class LogisticsService extends MicroService {
 	protected void initialize() {
 		subscribeEvent(DeliveryEvent.class, message -> {
 			CheckAvailabilityVehicle check = new CheckAvailabilityVehicle();
-			System.out.println(getName() + " is sending check availability event");
+			//System.out.println(getName() + " is sending check availability event");
 			Future<DeliveryVehicle> Result = sendEvent(check);
 			DeliveryVehicle Vehicle = Result.get();
-			if(Vehicle != null)
-				System.out.println(this.getName() + ", " + Vehicle.getLicense() + ", " + Vehicle.getSpeed());
+			//if(Vehicle != null)
+			//	System.out.println(this.getName() + ", " + Vehicle.getLicense() + ", " + Vehicle.getSpeed());
 			Vehicle.deliver(message.getAddress(), message.getDistance());
 			ReleaseVehicle release = new ReleaseVehicle(Vehicle);
-			System.out.println(getName() + " is sending release event ");
+			//System.out.println(getName() + " is sending release event ");
 			sendEvent(release);
 		});
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-            System.out.println(getName() + " is terminating ");
+         //   System.out.println(getName() + " is terminating ");
 
             terminate();
 		});

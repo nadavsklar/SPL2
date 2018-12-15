@@ -22,7 +22,7 @@ public class TimeService extends MicroService{
 
 	private int speed;
 	private int duration;
-	private int currentTick;
+	private static int currentTick;
 	private Timer SystemTimer;
 
 	public TimeService(String name, int speed, int duration) {
@@ -35,28 +35,28 @@ public class TimeService extends MicroService{
 
 	@Override
 	protected void initialize() {
-	    System.out.println(getName() + " has initiated");
+	    //System.out.println(getName() + " has initiated");
 		SystemTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
                 if (duration == currentTick) {
-                    System.out.println(" timer ended, sending terminate");
+                    //System.out.println(" timer ended, sending terminate");
                     SystemTimer.cancel();
                     sendBroadcast(new TerminateBroadcast());
                 }
                 else {
-                	System.out.println();
-                    System.out.println(getName() + " is sending tick broadcast " + currentTick);
+                	//System.out.println();
+                    //System.out.println(getName() + " is sending tick broadcast " + currentTick);
                     TickBroadcast TickBroadcast = new TickBroadcast(currentTick);
                     sendBroadcast(TickBroadcast);
-                    System.out.println("broadcast number " + currentTick + " sent ");
+                    //System.out.println("broadcast number " + currentTick + " sent ");
                     currentTick++;
                 }
 			}
 		}, speed, duration * speed);
 
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-		    System.out.println("Timer is terminating");
+		    //System.out.println("Timer is terminating");
             terminate();
         });
 	}
@@ -69,7 +69,7 @@ public class TimeService extends MicroService{
 		return duration;
 	}
 
-	public int getCurrentTick() {
+	public static int getCurrentTick() {
 		return currentTick;
 	}
 
