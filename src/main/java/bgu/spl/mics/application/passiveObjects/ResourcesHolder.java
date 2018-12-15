@@ -45,23 +45,6 @@ public class ResourcesHolder {
      * 			{@link DeliveryVehicle} when completed.   
      */
 	public Future<DeliveryVehicle> acquireVehicle() {
-        /*Future<DeliveryVehicle> dv = new Future<>();
-        if (sem.tryAcquire())  // there is ready car
-            dv.resolve(availableVehicles.poll());
-        else
-            notResolved.add(dv);
-        return dv;*/
-        /*try {
-            sem.acquire();
-        }
-        catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
-        System.out.println("Resource holder aquired");
-        Future<DeliveryVehicle> dv = new Future<>();
-        dv.resolve(availableVehicles.poll());
-        return dv;*/
-
         Future<DeliveryVehicle> dv = new Future<>();
         if (sem.tryAcquire())
             dv.resolve(availableVehicles.poll());
@@ -77,15 +60,6 @@ public class ResourcesHolder {
      * @param vehicle	{@link DeliveryVehicle} to be released.
      */
 	public void releaseVehicle(DeliveryVehicle vehicle) {
-        /*if (!notResolved.isEmpty()) {
-            Future<DeliveryVehicle> dv = notResolved.poll();
-            dv.resolve(vehicle);
-        }
-        else {
-            sem.release();
-            availableVehicles.add(vehicle);
-        }*/
-        //System.out.println("Resource holder realesed");
         if (!notResolved.isEmpty()) {
             Future<DeliveryVehicle> dv = notResolved.poll();
             dv.resolve(vehicle);
