@@ -12,14 +12,24 @@ import java.util.Vector;
  */
 public class Customer implements Serializable {
 
-	private int id;
-	private String name;
-	private String address;
-	private int distance;
-	private Vector<OrderReceipt> Receipts;
-	private int creditCard;
-	private int availableAmountInCreditCard;
+	private int id; //id of the customer
+	private String name; //name of the customer
+	private String address; //address of the customer
+	private int distance; //distance between the address of the customer and the store
+	private Vector<OrderReceipt> Receipts; //Receipts which the customer made
+	private int creditCard; //credit card number of the customer
+	private int availableAmountInCreditCard; //money of the customer
 
+	/**
+	 * Constructor
+	 * @param id
+	 * @param name
+	 * @param address
+	 * @param distance
+	 * @param Receipts
+	 * @param creditCard
+	 * @param availableAmountInCreditCard
+	 */
 	public Customer(int id, String name, String address, int distance, Vector<OrderReceipt> Receipts, int creditCard, int availableAmountInCreditCard){
 		this.id = id;
 		this.name = name;

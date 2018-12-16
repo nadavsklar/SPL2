@@ -3,10 +3,8 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.*;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.*;
-import java.util.HashMap;
 
 /** This is the Main class of the application. You should parse the input file,
  * create the different instances of the objects, and run the system.

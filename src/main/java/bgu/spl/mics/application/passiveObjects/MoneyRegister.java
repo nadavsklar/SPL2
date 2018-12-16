@@ -1,11 +1,9 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import bgu.spl.mics.application.Printer;
+
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
@@ -20,8 +18,8 @@ import java.util.Vector;
  */
 public class MoneyRegister implements Serializable {
 
-	private List<OrderReceipt> Receipts;
-	private int totalEarnings;
+	private List<OrderReceipt> Receipts; //All receipts in the store
+	private int totalEarnings; //total earnings of the store
 
 	/**
      * Retrieves the single instance of this class.

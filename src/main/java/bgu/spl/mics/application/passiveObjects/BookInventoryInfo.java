@@ -8,15 +8,11 @@ package bgu.spl.mics.application.passiveObjects;
  */
 public class BookInventoryInfo {
 
-    private String BookTitle;
-    private int price;
-    private int amountInInventory;
+    private String BookTitle; //the book title
+    private int price; //the book price
+    private int amountInInventory; //the amounts of copies from the book in the inventory
 
-	public BookInventoryInfo(String BookTitle, int price) {
-	    this.BookTitle = BookTitle;
-	    this.price = price;
-    }
-
+    //Constructor
     public BookInventoryInfo(String BookTitle, int amountInInventory, int price) {
         this.BookTitle = BookTitle;
         this.price = price;

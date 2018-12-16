@@ -16,9 +16,9 @@ import java.util.concurrent.Semaphore;
 
 public class ResourcesHolder {
 
-	private ConcurrentLinkedQueue<DeliveryVehicle> availableVehicles;
-	private Semaphore sem;
-	private ConcurrentLinkedQueue<Future> notResolved;
+	private ConcurrentLinkedQueue<DeliveryVehicle> availableVehicles; //All available vehicles
+	private Semaphore sem; //Semaphore
+	private ConcurrentLinkedQueue<Future> notResolved; //All not resolved results
 
 	/**
      * Retrieves the single instance of this class.

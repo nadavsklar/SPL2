@@ -1,4 +1,6 @@
 package bgu.spl.mics.application.passiveObjects;
+import bgu.spl.mics.application.Printer;
+
 import java.util.HashMap;
 
 /**
@@ -13,8 +15,8 @@ import java.util.HashMap;
  */
 public class Inventory {
 
-    private HashMap<String, Integer> amountsInInventory;
-    private HashMap<String, Integer> prices;
+    private HashMap<String, Integer> amountsInInventory; //Matching for every book title its amount in the inventory
+    private HashMap<String, Integer> prices; //Matching for every book title its price
 
 	/**
      * Retrieves the single instance of this class.

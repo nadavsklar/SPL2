@@ -1,7 +1,9 @@
-package bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics.application;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.Printer;
 import bgu.spl.mics.application.messages.BookOrderEvent;
+import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

@@ -11,15 +11,16 @@ import java.io.Serializable;
  */
 public class OrderReceipt implements Serializable {
 
-	private int orderId;
-	private String seller;
-	private int customerId;
-	private String bookTitle;
-	private int price;
+	private int orderId; //id of the order
+	private String seller; //name of the service which created the receipt
+	private int customerId; //id of the customer
+	private String bookTitle; //book title
+	private int price; //total price
 	private int issuedTick; //tick in which the receipt was issued
 	private int orderTick; //tick in which the customer ordered the book
 	private int proccesTick; ////tick in which the selling service started processing the order
 
+	//Constructor
 	public OrderReceipt(int orderId, String seller, int customerId, String bookTitle, int price){
 		this.orderId = orderId;
 		this.seller = seller;
@@ -88,34 +89,28 @@ public class OrderReceipt implements Serializable {
 		return proccesTick;
 	}
 
+	//Setters
 	public void setOrderId(int orderId) {
 		this.orderId = orderId;
 	}
-
 	public void setSeller(String seller) {
 		this.seller = seller;
 	}
-
 	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
 	}
-
 	public void setBookTitle(String bookTitle) {
 		this.bookTitle = bookTitle;
 	}
-
 	public void setPrice(int price) {
 		this.price = price;
 	}
-
 	public void setIssuedTick(int issuedTick) {
 		this.issuedTick = issuedTick;
 	}
-
 	public void setOrderTick(int orderTick) {
 		this.orderTick = orderTick;
 	}
-
 	public void setProccesTick(int proccesTick) {
 		this.proccesTick = proccesTick;
 	}
