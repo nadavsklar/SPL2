@@ -7,7 +7,6 @@ import bgu.spl.mics.application.messages.DeliveryEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.passiveObjects.*;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.util.List;
 import java.util.Vector;
@@ -24,50 +23,49 @@ import java.util.Vector;
 
 public class APIService extends MicroService{
 
-	private Vector<BookOrderEvent> Orders;
-	private Customer customer;
+	private Vector<BookOrderEvent> Orders; //List of books ordered by the customer
+	private Customer Customer; //Customer which is matched to the API Service
 
+    //Constructor
 	public APIService(String name, Vector<BookOrderEvent> Orders) {
 		super(name);
 		this.Orders = Orders;
-		customer = Orders.get(0).getCustomer();
+		Customer = Orders.get(0).getCustomer();
 	}
 
 	@Override
 	protected void initialize() {
-        //System.out.println(getName() + " has initiated ");
+	    //Subscribing to ticks which are sent by the Time Service
 		subscribeBroadcast(TickBroadcast.class, message -> {
-		    //System.out.println(getName() + " has received tick broadcast ");
             List<Future> results = new Vector<>();
-
-		    Integer currentTimeTick = message.getCurrentTick();
+		    Integer currentTimeTick = message.getCurrentTick(); //current tick
 		    Vector<OrderReceipt> currentReceipts = new Vector<>();
-
+		    //Sending all orders which made by the customer in the current tick
 		    for (BookOrderEvent bookOrderEvent : Orders) {
 		        if (currentTimeTick.equals(bookOrderEvent.getTimeTick())) {
-		            //System.out.println(getName() + " is sending book order event");
                     Future currentResult = sendEvent(bookOrderEvent);
                     results.add(currentResult);
                 }
             }
+            //Getting the results of the orders
             for (int i = 0; i < results.size(); i++) {
                 Future currentResult = results.get(i);
+                //The order was succeeded
                 if (currentResult.get() instanceof OrderReceipt) {
                     OrderReceipt currentReceipt = (OrderReceipt) currentResult.get();
                     currentReceipt.setOrderTick(currentTimeTick);
                     currentReceipts.add(currentReceipt);
-                    String address = customer.getAddress();
-                    int distance = customer.getDistance();
-                    //System.out.println(getName() + " is sending delivery event");
+                    String address = Customer.getAddress();
+                    int distance = Customer.getDistance();
+                    //Sending delivery event
                     sendEvent(new DeliveryEvent(address, distance));
-
-                    customer.addOrderReceipt(currentReceipts);
+                    //Adding all the receipts to the customer
+                    Customer.addOrderReceipt(currentReceipts);
                 }
             }
 		});
-
-		subscribeBroadcast(TerminateBroadcast.class, message -> {
-            //System.out.println(getName() + " is terminating");
+        //Subscribing to know when time ends
+		subscribeBroadcast(TerminateBroadcast.class, message -> { ;
             terminate();
         });
 	}

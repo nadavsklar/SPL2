@@ -41,7 +41,8 @@ public class ResourcesHolder {
      * Tries to acquire a vehicle and gives a future object which will
      * resolve to a vehicle.
      * <p>
-     * @return 	{@link Future<DeliveryVehicle>} object which will resolve to a 
+
+	 turn 	{@link Future<DeliveryVehicle>} object which will resolve to a
      * 			{@link DeliveryVehicle} when completed.   
      */
 	public Future<DeliveryVehicle> acquireVehicle() {

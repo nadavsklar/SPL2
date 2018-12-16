@@ -5,6 +5,7 @@ import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 
 public class CheckAvailabilityVehicle implements Event {
 
+    //Constructor
     public CheckAvailabilityVehicle(){}
 
 }

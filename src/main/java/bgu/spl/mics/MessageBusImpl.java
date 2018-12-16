@@ -13,8 +13,8 @@ public class MessageBusImpl implements MessageBus {
 	private ConcurrentHashMap<Class<? extends Event>, BlockingDeque<MicroService>> Events;
 	private ConcurrentHashMap<Class<? extends Broadcast>, BlockingDeque<MicroService>> Brodcasts;
 	private ConcurrentHashMap<MicroService, ConcurrentLinkedQueue<Message>> Missions;
-	private Object lockBrodcast = new Object();
-	private Object lockEvents = new Object();
+	private Object lockBrodcast = new Object(); //lock sending and receiving broadcasts
+	private Object lockEvents = new Object(); //lock sending and receiving events
 
 	private static class MessageBusHolder {
 		private static MessageBusImpl instance = new MessageBusImpl();
@@ -39,7 +39,6 @@ public class MessageBusImpl implements MessageBus {
 			if (!Events.containsKey(type))
 				Events.put(type, new LinkedBlockingDeque<>());
 			Events.get(type).addFirst(m);
-            //System.out.println(m.getName() + " added to " + type);
 		}
 	}
 
@@ -81,7 +80,6 @@ public class MessageBusImpl implements MessageBus {
 				BlockingDeque<MicroService> Services = Events.get(e.getClass());
 				if (!Services.isEmpty()) {
                     MicroService m = Services.removeFirst();
-                    //System.out.println(m.getName());
                     Missions.get(m).add(e);
                     Results.put(e, new Future());
                     Services.addLast(m);

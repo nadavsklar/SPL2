@@ -19,7 +19,7 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
  */
 public class ResourceService extends MicroService{
 
-	private ResourcesHolder Resources;
+	private ResourcesHolder Resources; //Reference to the resources of the store
 
 	public ResourceService(String name) {
 		super(name);
@@ -28,18 +28,17 @@ public class ResourceService extends MicroService{
 
 	@Override
 	protected void initialize() {
+		//Subscribing to take vehicle
 		subscribeEvent(CheckAvailabilityVehicle.class, message -> {
-		    //System.out.println(getName() + " has received check vehicle");
 			Future<DeliveryVehicle> FutureVehicle = Resources.acquireVehicle();
 			complete(message, FutureVehicle); // Vehicle
 		});
+		//Subscribing to release vehicle
 		subscribeEvent(ReleaseVehicle.class, message-> {
-		    //System.out.println(getName() + " has received release vehicle");
 			Resources.releaseVehicle(message.getVehicle());
 		});
-
+		//Subscribing to know when time ends
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-		    //System.out.println(getName() + " is terminating");
 		    Resources.load(null);
             terminate();
 		});

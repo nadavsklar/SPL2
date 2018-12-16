@@ -21,8 +21,9 @@ import bgu.spl.mics.application.passiveObjects.ResourcesHolder;
 
 public class InventoryService extends MicroService{
 
-	private Inventory inventory;
+	private Inventory inventory; //Reference to the inventory in the store
 
+	//Constructor
 	public InventoryService(String name) {
 		super(name);
 		inventory = Inventory.getInstance();
@@ -30,21 +31,18 @@ public class InventoryService extends MicroService{
 
 	@Override
 	protected void initialize() {
-
+		//Subscribing to check availability of the book
 	    subscribeEvent(CheckAvailabilityBook.class, iv -> {
-	    	//System.out.println(getName() + " has received check book event");
 	        int price = inventory.checkAvailabiltyAndGetPrice(iv.getBook());
 	        complete(iv, price);
         });
-
+	    //Subscribing to take the book
         subscribeEvent(TakeBook.class, iv -> {
-        	//System.out.println(getName() + " has received take book");
             OrderResult result = inventory.take(iv.getBook());
             complete(iv, result);
         });
-
+		//Subscribing to know when time ends
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-			//System.out.println(getName() + " is terminating");
             terminate();
 		});
 

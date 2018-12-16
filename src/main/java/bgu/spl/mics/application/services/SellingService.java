@@ -21,46 +21,45 @@ import bgu.spl.mics.application.passiveObjects.*;
  */
 public class SellingService extends MicroService{
 
-	private MoneyRegister MoneyRegister;
+	private MoneyRegister MoneyRegister; //Reference to the money register
 
+    //Constructor
 	public SellingService(String name) {
 		super(name);
 		MoneyRegister = MoneyRegister.getInstance();
 	}
 
-
-
 	@Override
 	protected void initialize() {
-
+	    //Subscribing to book orders
 		subscribeEvent(BookOrderEvent.class, message ->{
-		    //System.out.println(getName() + " has received book order");
+		    //Creating new receipt
             OrderReceipt receipt = new OrderReceipt();
             receipt.setProccesTick(TimeService.getCurrentTick());
-            //System.out.println(getName() + " is sending check book ");
+            //Sending event which check if the book is available
             Future<Integer> price = sendEvent(new CheckAvailabilityBook(message.getBookTitle()));
             int priceValue = price.get();
 			if (priceValue >= 0 && message.getCustomer().getAvailableCreditAmount() >= priceValue) {
-			        //System.out.println(getName() + " is sending take book");
-                    sendEvent(new TakeBook(message.getBookTitle()));
-                    receipt.setBookTitle(message.getBookTitle());
-                    receipt.setCustomerId(message.getCustomer().getId());
-                    receipt.setPrice(price.get());
-                    receipt.setSeller(getName());
-                    receipt.setOrderId(OrdersId.getCurrentOrderId());
-                    OrdersId.nextOrder();
-                    MoneyRegister.file(receipt);
-                    MoneyRegister.chargeCreditCard(message.getCustomer(), receipt.getPrice());
-                    receipt.setIssuedTick(TimeService.getCurrentTick());
-                    complete(message, receipt);
+			    //The book is available, creating the receipt
+			    sendEvent(new TakeBook(message.getBookTitle()));
+			    receipt.setBookTitle(message.getBookTitle());
+			    receipt.setCustomerId(message.getCustomer().getId());
+			    receipt.setPrice(price.get());
+			    receipt.setSeller(getName());
+			    receipt.setOrderId(OrdersId.getCurrentOrderId());
+			    OrdersId.nextOrder();
+			    MoneyRegister.file(receipt);
+			    MoneyRegister.chargeCreditCard(message.getCustomer(), receipt.getPrice());
+			    receipt.setIssuedTick(TimeService.getCurrentTick());
+			    complete(message, receipt);
 			}
             else {
+			    //The book is unavailable
                 complete(message, OrderResult.NOT_IN_STOCK);
             }
 		});
-
+        //Subscribing to know when time ends
         subscribeBroadcast(TerminateBroadcast.class, message -> {
-            //System.out.println(getName() + " is terminating ");
             terminate();
         });
 		

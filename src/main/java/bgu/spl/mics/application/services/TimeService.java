@@ -20,17 +20,18 @@ import java.util.TimerTask;
  */
 public class TimeService extends MicroService{
 
-	private int speed;
-	private int duration;
-	private static int currentTick;
-	private Timer SystemTimer;
+	private int speed; //Increasing tick every @speed milliseconds
+	private int duration; //Duration of the process
+	private static int currentTick; //Current tick in the system
+	private Timer SystemTimer; //Java timer
 
+	//Constructor
 	public TimeService(String name, int speed, int duration) {
 		super(name);
 		this.speed = speed;
 		this.duration = duration;
-		SystemTimer = new Timer();
-		currentTick = 1;
+		this.SystemTimer = new Timer();
+		this.currentTick = 1;
 	}
 
 	@Override
@@ -38,21 +39,21 @@ public class TimeService extends MicroService{
 		SystemTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
+				//Time has ended!
                 if (duration == currentTick) {
-                    SystemTimer.cancel();
-                    sendBroadcast(new TerminateBroadcast());
+                    SystemTimer.cancel(); //Canceling timer
+                    sendBroadcast(new TerminateBroadcast()); //Terminate all other services
                 }
+                //Time has not ended
                 else {
-                    //System.out.println(getName() + " sending tick broadcast ");
-                    TickBroadcast TickBroadcast = new TickBroadcast(currentTick);
-                    sendBroadcast(TickBroadcast);
-                    currentTick++;
+                    TickBroadcast TickBroadcast = new TickBroadcast(currentTick); //Creating new tick broadcast
+                    sendBroadcast(TickBroadcast); //Sending tick to other services
+                    currentTick++; //Increasing tick
                 }
 			}
 		}, 0, speed);
-
+		//Subscribing to know when time ends
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
-		    //System.out.println(getName() + " is terminating ");
             terminate();
         });
 	}
