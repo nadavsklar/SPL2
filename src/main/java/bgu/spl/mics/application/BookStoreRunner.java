@@ -63,22 +63,7 @@ public class BookStoreRunner {
         }
         MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
 
-        /*for (int i = 0; i < Customers.length; i++) {
-            System.out.println(Customers[i].getName());
-            System.out.println(Customers[i].getAvailableCreditAmount());
-        }
 
-        for (int i = 0; i < BooksInfo.length; i++) {
-            System.out.println(BooksInfo[i].getBookTitle() + " " + Inventory.getInstance().getAmount(BooksInfo[i].getBookTitle()));
-        }
-
-        for (int i = 0; i < MoneyRegister.getInstance().getReceipts().size(); i++) {
-            OrderReceipt curr = MoneyRegister.getInstance().getReceipts().get(i);
-            System.out.println(curr.getCustomerId() + " " + curr.getOrderTick() + " " + curr.getBookTitle() + " " + curr
-            .getSeller());
-        }
-
-        System.out.println(MoneyRegister.getInstance().getTotalEarnings());*/
 
     }
 
