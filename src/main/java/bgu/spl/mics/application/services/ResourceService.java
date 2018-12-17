@@ -36,6 +36,7 @@ public class ResourceService extends MicroService{
 		//Subscribing to release vehicle
 		subscribeEvent(ReleaseVehicle.class, message-> {
 			Resources.releaseVehicle(message.getVehicle());
+			complete(message, message.getVehicle());
 		});
 		//Subscribing to know when time ends
 		subscribeBroadcast(TerminateBroadcast.class, message -> {

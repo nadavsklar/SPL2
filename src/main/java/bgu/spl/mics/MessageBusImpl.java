@@ -80,7 +80,6 @@ public class MessageBusImpl implements MessageBus {
 				BlockingDeque<MicroService> Services = Events.get(e.getClass());
 				if (!Services.isEmpty()) {
                     MicroService m = Services.removeFirst();
-                    System.out.println("Name of the Service = " + m.getName());
                     Missions.get(m).add(e);
                     Results.put(e, new Future());
                     Services.addLast(m);
@@ -100,9 +99,9 @@ public class MessageBusImpl implements MessageBus {
 	public void unregister(MicroService m) {
 		Queue<Message> mEvents = Missions.get(m);
 		mEvents.clear();
-		Missions.remove(m);
         deleteSubscribes(Events, m);
         deleteSubscribes(Brodcasts, m);
+		Missions.remove(m);
 	}
 
 	private void deleteSubscribes(ConcurrentHashMap Map, MicroService m) {

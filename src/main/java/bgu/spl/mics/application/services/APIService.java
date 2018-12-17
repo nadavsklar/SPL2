@@ -53,6 +53,7 @@ public class APIService extends MicroService{
             for (int i = 0; i < results.size(); i++) {
                 Future currentResult = results.get(i);
                 //The order was succeeded
+                System.out.println(currentResult);
                 if (currentResult.get() instanceof OrderReceipt) {
                     OrderReceipt currentReceipt = (OrderReceipt) currentResult.get();
                     currentReceipt.setOrderTick(currentTimeTick);

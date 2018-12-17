@@ -30,11 +30,16 @@ public class LogisticsService extends MicroService {
 		subscribeEvent(DeliveryEvent.class, message -> {
 			//Sending event which take vehicle
 			Future<Future<DeliveryVehicle>> FutureVehicle = sendEvent(new CheckAvailabilityVehicle());
-			if (FutureVehicle.get().get() instanceof DeliveryVehicle) {
-				DeliveryVehicle Vehicle = FutureVehicle.get().get();
-				Vehicle.deliver(message.getAddress(), message.getDistance());
-				//Sending event which release vehicle
-				sendEvent(new ReleaseVehicle(Vehicle));
+			Object var;
+			if (FutureVehicle != null) {
+				var = FutureVehicle.get();
+				if (var instanceof DeliveryVehicle) {
+					DeliveryVehicle Vehicle = FutureVehicle.get().get();
+					Vehicle.deliver(message.getAddress(), message.getDistance());
+					//Sending event which release vehicle
+					sendEvent(new ReleaseVehicle(Vehicle));
+				}
+				complete(message, true);
 			}
 		});
 		//Subscribing to know when time ends

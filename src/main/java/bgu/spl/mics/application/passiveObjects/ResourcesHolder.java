@@ -85,7 +85,10 @@ public class ResourcesHolder {
         }
         else {
             while (!notResolved.isEmpty())
-                notResolved.poll().resolve(OrderResult.NOT_IN_STOCK);
+            	if (notResolved.peek() != null)
+                	notResolved.poll().resolve(OrderResult.NOT_IN_STOCK);
+            	else
+            		notResolved.poll();
         }
 	}
 
