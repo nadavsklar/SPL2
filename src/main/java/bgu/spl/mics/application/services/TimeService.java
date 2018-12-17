@@ -31,11 +31,17 @@ public class TimeService extends MicroService{
 		this.speed = speed;
 		this.duration = duration;
 		this.SystemTimer = new Timer();
-		this.currentTick = 0;
+		this.currentTick = 1;
 	}
 
 	@Override
 	protected void initialize() {
+	    try {
+            Thread.currentThread().sleep(100);
+        }
+	    catch (InterruptedException ie){
+	        ie.printStackTrace();
+        }
 		SystemTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -46,9 +52,9 @@ public class TimeService extends MicroService{
                 }
                 //Time has not ended
                 else {
-					currentTick++; //Increasing tick
                     TickBroadcast TickBroadcast = new TickBroadcast(currentTick); //Creating new tick broadcast
                     sendBroadcast(TickBroadcast); //Sending tick to other services
+                    currentTick++; //Increasing tick
                 }
 			}
 		}, 0, speed);
