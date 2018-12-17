@@ -64,16 +64,12 @@ public class Inventory {
      * 			second should reduce by one the number of books of the desired type.
      */
 	public OrderResult take (String book) {
-		try {
-			if (Semaphores.get(book).tryAcquire()) {
-				int oldAmount = amountsInInventory.get(book);
-				amountsInInventory.replace(book, oldAmount, oldAmount - 1);
-				return OrderResult.SUCCESSFULLY_TAKEN;
-			} else
-				return OrderResult.NOT_IN_STOCK;
-		} catch (Exception e) {
-			return null;
-		}
+		if (Semaphores.get(book).tryAcquire()) {
+			int oldAmount = amountsInInventory.get(book);
+			amountsInInventory.replace(book, oldAmount, oldAmount - 1);
+			return OrderResult.SUCCESSFULLY_TAKEN;
+		} else
+			return OrderResult.NOT_IN_STOCK;
 	}
 	
 	/**
