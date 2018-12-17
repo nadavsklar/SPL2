@@ -42,17 +42,24 @@ public class SellingService extends MicroService{
             int priceValue = price.get();
 			if (priceValue >= 0 && message.getCustomer().getAvailableCreditAmount() >= priceValue) {
 			    //The book is available, creating the receipt
-			    sendEvent(new TakeBook(message.getBookTitle()));
-			    receipt.setBookTitle(message.getBookTitle());
-			    receipt.setCustomerId(message.getCustomer().getId());
-			    receipt.setPrice(price.get());
-			    receipt.setSeller(getName());
-			    receipt.setOrderId(OrdersId.getCurrentOrderId());
-			    OrdersId.nextOrder();
-			    MoneyRegister.file(receipt);
-			    MoneyRegister.chargeCreditCard(message.getCustomer(), receipt.getPrice());
-			    receipt.setIssuedTick(TimeService.getCurrentTick());
-			    complete(message, receipt);
+			    OrderResult OrderResult = (OrderResult) sendEvent(new TakeBook(message.getBookTitle())).get();
+			    if(OrderResult == OrderResult.SUCCESSFULLY_TAKEN) {
+					//The book was successfully taken
+					receipt.setBookTitle(message.getBookTitle());
+					receipt.setCustomerId(message.getCustomer().getId());
+					receipt.setPrice(price.get());
+					receipt.setSeller(getName());
+					receipt.setOrderId(OrdersId.getCurrentOrderId());
+					OrdersId.nextOrder();
+					MoneyRegister.file(receipt);
+					MoneyRegister.chargeCreditCard(message.getCustomer(), receipt.getPrice());
+					receipt.setIssuedTick(TimeService.getCurrentTick());
+					complete(message, receipt);
+				}
+				else{
+			    	//The book was not successfully taken
+			    	complete(message, OrderResult.NOT_IN_STOCK);
+				}
 			}
             else {
 			    //The book is unavailable

@@ -2,6 +2,8 @@ package bgu.spl.mics.application.passiveObjects;
 import bgu.spl.mics.application.Printer;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 
 /**
  * Passive data-object representing the store inventory.
@@ -17,6 +19,7 @@ public class Inventory {
 
     private HashMap<String, Integer> amountsInInventory; //Matching for every book title its amount in the inventory
     private HashMap<String, Integer> prices; //Matching for every book title its price
+	private ConcurrentHashMap<String, Semaphore> Semaphores; //Matching for every book title its semaphore
 
 	/**
      * Retrieves the single instance of this class.
@@ -44,9 +47,11 @@ public class Inventory {
 	public void load (BookInventoryInfo[ ] inventory ) {
         this.amountsInInventory = new HashMap<>();
         this.prices = new HashMap<>();
+        this.Semaphores = new ConcurrentHashMap<>();
         for (int i = 0; i < inventory.length; i++) {
             this.prices.put(inventory[i].getBookTitle(), inventory[i].getPrice());
             this.amountsInInventory.put(inventory[i].getBookTitle(), inventory[i].getAmountInInventory());
+            this.Semaphores.put(inventory[i].getBookTitle(), new Semaphore(inventory[i].getAmountInInventory()));
         }
     }
 	
@@ -58,20 +63,17 @@ public class Inventory {
      * 			The first should not change the state of the inventory while the 
      * 			second should reduce by one the number of books of the desired type.
      */
-	public synchronized OrderResult take (String book) {
-	    try {
-	        if (amountsInInventory.get(book) > 0) {
-	            int oldAmount = amountsInInventory.get(book);
-	            amountsInInventory.replace(book, oldAmount, oldAmount - 1);
-	            notifyAll();
-	            return OrderResult.SUCCESSFULLY_TAKEN;
-	        } else {
-	            notifyAll();
-	            return OrderResult.NOT_IN_STOCK;
-	        }
-	    } catch (Exception e) {
-	        return null;
-	    }
+	public OrderResult take (String book) {
+		try {
+			if (Semaphores.get(book).tryAcquire()) {
+				int oldAmount = amountsInInventory.get(book);
+				amountsInInventory.replace(book, oldAmount, oldAmount - 1);
+				return OrderResult.SUCCESSFULLY_TAKEN;
+			} else
+				return OrderResult.NOT_IN_STOCK;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	/**
@@ -80,15 +82,14 @@ public class Inventory {
      * @param book 		Name of the book.
      * @return the price of the book if it is available, -1 otherwise.
      */
-	public synchronized int checkAvailabiltyAndGetPrice(String book) {
-        try {
-            if (amountsInInventory.get(book) > 0)
-                return prices.get(book);
-            return -1;
-        }
-        catch (Exception e) {
-            return -1;
-        }
+	public int checkAvailabiltyAndGetPrice(String book) {
+		try {
+			if (amountsInInventory.get(book) > 0)
+				return prices.get(book);
+			return -1;
+		} catch (Exception e) {
+			return -1;
+		}
     }
 	
 	/**
@@ -103,7 +104,7 @@ public class Inventory {
 		Printer.SerializablePrinter(amountsInInventory, filename);
     }
 
-    /*public int getAmount(String book) {
+    public int getAmount(String book) {
 	    return this.amountsInInventory.get(book);
-    }*/
+    }
 }

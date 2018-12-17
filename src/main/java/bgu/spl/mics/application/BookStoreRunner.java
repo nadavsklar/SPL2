@@ -69,7 +69,7 @@ public class BookStoreRunner {
 
         MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
 
-        /*for (int i = 0; i < Customers.length; i++) {
+        for (int i = 0; i < Customers.length; i++) {
             System.out.println(Customers[i].getName());
             System.out.println(Customers[i].getAvailableCreditAmount());
         }
@@ -84,7 +84,7 @@ public class BookStoreRunner {
             .getSeller());
         }
 
-        System.out.println(MoneyRegister.getInstance().getTotalEarnings());*/
+        System.out.println(MoneyRegister.getInstance().getTotalEarnings());
 
     }
 
