@@ -47,15 +47,16 @@ public class BookStoreRunner {
         }
 
         ///// Execution
-
         Inventory.getInstance().load(BooksInfo);
         ResourcesHolder.getInstance().load(VehiclesInfo);
+
         MicroService[] Workers = MainHelper.initiateWorkers(SellingServices, InventoryServices, LogisticServices, ResourceServices, APIServices);
         //for (int i = 0; i < Workers.length; i++)
             //System.out.println(Workers[i].getName());
         Thread[] WorkersThreads = MainHelper.initiateThreads(Workers);
         for (Thread thread : WorkersThreads)
             thread.start();
+
 
         Thread TimeThread = new Thread(TimerService);
         TimeThread.start();
