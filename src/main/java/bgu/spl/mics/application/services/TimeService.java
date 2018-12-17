@@ -46,9 +46,9 @@ public class TimeService extends MicroService{
                 }
                 //Time has not ended
                 else {
+					currentTick++; //Increasing tick
                     TickBroadcast TickBroadcast = new TickBroadcast(currentTick); //Creating new tick broadcast
                     sendBroadcast(TickBroadcast); //Sending tick to other services
-                    currentTick++; //Increasing tick
                 }
 			}
 		}, 0, speed);
