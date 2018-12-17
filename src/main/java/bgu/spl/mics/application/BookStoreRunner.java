@@ -59,6 +59,7 @@ public class BookStoreRunner {
 
 
         Thread TimeThread = new Thread(TimerService);
+
         TimeThread.start();
 
         try {
