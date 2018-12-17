@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.InitServiceEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.passiveObjects.*;
@@ -23,15 +24,19 @@ public class TimeService extends MicroService{
 	private int speed; //Increasing tick every @speed milliseconds
 	private int duration; //Duration of the process
 	private static int currentTick; //Current tick in the system
+	private int numberOfServicesRegistered;
+	private int numberOfServicesExisted;
 	private Timer SystemTimer; //Java timer
 
 	//Constructor
-	public TimeService(String name, int speed, int duration) {
+	public TimeService(String name, int speed, int duration, int numberOfServicesExisted) {
 		super(name);
 		this.speed = speed;
 		this.duration = duration;
 		this.SystemTimer = new Timer();
 		this.currentTick = 1;
+		this.numberOfServicesExisted = numberOfServicesExisted;
+		this.numberOfServicesRegistered = 0;
 	}
 
 	@Override
@@ -42,26 +47,32 @@ public class TimeService extends MicroService{
 	    catch (InterruptedException ie){
 	        ie.printStackTrace();
         }
-		SystemTimer.schedule(new TimerTask() {
-			@Override
+        SystemTimer.schedule(new TimerTask() {
+        	@Override
 			public void run() {
-				//Time has ended!
-                if (duration == currentTick) {
-                    SystemTimer.cancel(); //Canceling timer
-                    sendBroadcast(new TerminateBroadcast()); //Terminate all other services
-                }
-                //Time has not ended
-                else {
-                    TickBroadcast TickBroadcast = new TickBroadcast(currentTick); //Creating new tick broadcast
-                    sendBroadcast(TickBroadcast); //Sending tick to other services
-                    currentTick++; //Increasing tick
-                }
-			}
-		}, 0, speed);
+        		if(numberOfServicesExisted == numberOfServicesRegistered) {
+        			//Time has ended!
+					if (duration == currentTick) {
+						SystemTimer.cancel(); //Canceling timer
+						sendBroadcast(new TerminateBroadcast()); //Terminate all other services
+					}
+					//Time has not ended
+					else {
+						TickBroadcast TickBroadcast = new TickBroadcast(currentTick); //Creating new tick broadcast
+						sendBroadcast(TickBroadcast); //Sending tick to other services
+						currentTick++; //Increasing tick
+					}
+        		}
+        	}
+        	}, 0, speed);
 		//Subscribing to know when time ends
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
             terminate();
         });
+		//Subscribing to know when Services are registered
+		subscribeEvent(InitServiceEvent.class, message -> {
+			this.numberOfServicesRegistered++;
+		});
 	}
 
 	//Getters

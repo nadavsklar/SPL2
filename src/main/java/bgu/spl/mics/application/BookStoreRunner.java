@@ -22,19 +22,15 @@ public class BookStoreRunner {
         ResourceService[] ResourceServices = null;
         APIService[] APIServices = null;
         Customer[] Customers = null;
-
-
+        MicroService[] Workers = null;
         JsonParser parser = new JsonParser();
 
         try {
-
             //Reading from Json file
             Object obj = parser.parse(new FileReader(args[0]));
             JsonObject jsonObject = (JsonObject) obj;
-
             BooksInfo = MainHelper.InitBooks(jsonObject);
             VehiclesInfo = MainHelper.InitVehicles(jsonObject);
-            TimerService = MainHelper.InitTimerService(jsonObject);
             SellingServices = MainHelper.InitSellingServices(jsonObject);
             InventoryServices = MainHelper.InitInventoryServices(jsonObject);
             LogisticServices = MainHelper.InitLogisticServices(jsonObject);
@@ -42,6 +38,8 @@ public class BookStoreRunner {
             Object[][] tmp = MainHelper.InitAPIServices(jsonObject);
             APIServices = (APIService[]) tmp[0];
             Customers = (Customer[]) tmp[1];
+            Workers = MainHelper.initiateWorkers(SellingServices, InventoryServices, LogisticServices, ResourceServices, APIServices);
+            TimerService = MainHelper.InitTimerService(jsonObject, Workers.length);
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -51,7 +49,6 @@ public class BookStoreRunner {
         Inventory.getInstance().load(BooksInfo);
         ResourcesHolder.getInstance().load(VehiclesInfo);
 
-        MicroService[] Workers = MainHelper.initiateWorkers(SellingServices, InventoryServices, LogisticServices, ResourceServices, APIServices);
         Thread[] WorkersThreads = MainHelper.initiateThreads(Workers);
         for (Thread thread : WorkersThreads)
             thread.start();

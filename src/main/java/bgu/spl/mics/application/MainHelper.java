@@ -58,7 +58,7 @@ public class MainHelper {
     }
 
     //Init the timer service
-    public static TimeService InitTimerService(JsonObject jsonObject){
+    public static TimeService InitTimerService(JsonObject jsonObject, int numOfWorkers){
         JsonElement Time = jsonObject.getAsJsonObject("services").get("time");
         //Init speed and duration
         String TimeInfo = Time.toString();
@@ -68,7 +68,7 @@ public class MainHelper {
         int speed = Integer.parseInt(speedInfo);
         int duration = Integer.parseInt(durationInfo);
         //Creating the timer service
-        TimeService TimerService = new TimeService("Timer", speed, duration);
+        TimeService TimerService = new TimeService("Timer", speed, duration, numOfWorkers);
         return TimerService;
     }
 

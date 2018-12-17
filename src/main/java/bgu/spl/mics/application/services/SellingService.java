@@ -3,10 +3,7 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.OrdersId;
-import bgu.spl.mics.application.messages.BookOrderEvent;
-import bgu.spl.mics.application.messages.CheckAvailabilityBook;
-import bgu.spl.mics.application.messages.TakeBook;
-import bgu.spl.mics.application.messages.TerminateBroadcast;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.MoneyRegister;
 import bgu.spl.mics.application.passiveObjects.*;
 
@@ -33,6 +30,7 @@ public class SellingService extends MicroService{
 
 	@Override
 	protected void initialize() {
+		sendEvent(new InitServiceEvent(this));
 	    //Subscribing to book orders
 		subscribeEvent(BookOrderEvent.class, message ->{
 		    //Creating new receipt

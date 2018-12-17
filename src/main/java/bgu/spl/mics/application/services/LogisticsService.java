@@ -2,10 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.CheckAvailabilityVehicle;
-import bgu.spl.mics.application.messages.DeliveryEvent;
-import bgu.spl.mics.application.messages.ReleaseVehicle;
-import bgu.spl.mics.application.messages.TerminateBroadcast;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.DeliveryVehicle;
 import bgu.spl.mics.application.passiveObjects.*;
 
@@ -26,6 +23,7 @@ public class LogisticsService extends MicroService {
 
 	@Override
 	protected void initialize() {
+		sendEvent(new InitServiceEvent(this));
 		//Subscribing to deliver the book
 		subscribeEvent(DeliveryEvent.class, message -> {
 			//Sending event which take vehicle

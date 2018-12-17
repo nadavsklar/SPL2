@@ -2,10 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.BookOrderEvent;
-import bgu.spl.mics.application.messages.DeliveryEvent;
-import bgu.spl.mics.application.messages.TerminateBroadcast;
-import bgu.spl.mics.application.messages.TickBroadcast;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.*;
 
 import java.util.List;
@@ -35,6 +32,7 @@ public class APIService extends MicroService{
 
 	@Override
 	protected void initialize() {
+	    sendEvent(new InitServiceEvent(this));
 	    //Subscribing to ticks which are sent by the Time Service
 		subscribeBroadcast(TickBroadcast.class, message -> {
             List<Future> results = new Vector<>();
