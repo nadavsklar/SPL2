@@ -28,6 +28,7 @@ public class BookStoreRunner {
 
         try {
 
+            //Reading from Json file
             Object obj = parser.parse(new FileReader(args[0]));
             JsonObject jsonObject = (JsonObject) obj;
 
@@ -46,32 +47,26 @@ public class BookStoreRunner {
             e.printStackTrace();
         }
 
-        ///// Execution
+        /////Execution
         Inventory.getInstance().load(BooksInfo);
         ResourcesHolder.getInstance().load(VehiclesInfo);
 
         MicroService[] Workers = MainHelper.initiateWorkers(SellingServices, InventoryServices, LogisticServices, ResourceServices, APIServices);
-        //for (int i = 0; i < Workers.length; i++)
-            //System.out.println(Workers[i].getName());
         Thread[] WorkersThreads = MainHelper.initiateThreads(Workers);
         for (Thread thread : WorkersThreads)
             thread.start();
 
-
         Thread TimeThread = new Thread(TimerService);
-
         TimeThread.start();
-
         try {
             TimeThread.join();
         }
         catch (InterruptedException ie) {
             ie.printStackTrace();
         }
-
         MainHelper.printOutputs(Customers, args[1], args[2], args[3], args[4]);
 
-        for (int i = 0; i < Customers.length; i++) {
+        /*for (int i = 0; i < Customers.length; i++) {
             System.out.println(Customers[i].getName());
             System.out.println(Customers[i].getAvailableCreditAmount());
         }
@@ -86,7 +81,7 @@ public class BookStoreRunner {
             .getSeller());
         }
 
-        System.out.println(MoneyRegister.getInstance().getTotalEarnings());
+        System.out.println(MoneyRegister.getInstance().getTotalEarnings());*/
 
     }
 

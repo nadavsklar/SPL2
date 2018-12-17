@@ -48,7 +48,6 @@ public class SellingService extends MicroService{
 					OrderResult OrderResult = (OrderResult) sendEvent(new TakeBook(message.getBookTitle())).get();
 					if (OrderResult == OrderResult.SUCCESSFULLY_TAKEN) {
 						//The book was successfully taken
-						System.out.println("Name = " + Customer.getName() + ", " + "Book = " + message.getBookTitle());
 						receipt.setBookTitle(message.getBookTitle());
 						receipt.setCustomerId(Customer.getId());
 						receipt.setPrice(price.get());

@@ -37,23 +37,22 @@ public class APIService extends MicroService{
 	protected void initialize() {
 	    //Subscribing to ticks which are sent by the Time Service
 		subscribeBroadcast(TickBroadcast.class, message -> {
-		    System.out.println(getName() + " got Broadcast number " + message.getCurrentTick());
             List<Future> results = new Vector<>();
 		    Integer currentTimeTick = message.getCurrentTick(); //current tick
 		    Vector<OrderReceipt> currentReceipts = new Vector<>();
 		    //Sending all orders which made by the customer in the current tick
+
 		    for (BookOrderEvent bookOrderEvent : Orders) {
 		        if (currentTimeTick.equals(bookOrderEvent.getTimeTick())) {
-                    System.out.println("Name = " + Customer.getName() + ", " + "Book = " + bookOrderEvent.getBookTitle());
                     Future currentResult = sendEvent(bookOrderEvent);
                     results.add(currentResult);
                 }
             }
+
             //Getting the results of the orders
             for (int i = 0; i < results.size(); i++) {
                 Future currentResult = results.get(i);
                 //The order was succeeded
-                System.out.println(currentResult);
                 if (currentResult.get() instanceof OrderReceipt) {
                     OrderReceipt currentReceipt = (OrderReceipt) currentResult.get();
                     currentReceipt.setOrderTick(currentTimeTick);
@@ -67,6 +66,7 @@ public class APIService extends MicroService{
                 }
             }
 		});
+
         //Subscribing to know when time ends
 		subscribeBroadcast(TerminateBroadcast.class, message -> { ;
             terminate();

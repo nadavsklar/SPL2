@@ -36,11 +36,13 @@ public class InventoryService extends MicroService{
 	        int price = inventory.checkAvailabiltyAndGetPrice(iv.getBook());
 	        complete(iv, price);
         });
+
 	    //Subscribing to take the book
         subscribeEvent(TakeBook.class, iv -> {
             OrderResult result = inventory.take(iv.getBook());
             complete(iv, result);
         });
+
 		//Subscribing to know when time ends
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
             terminate();

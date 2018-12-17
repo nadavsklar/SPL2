@@ -20,15 +20,6 @@ public class OrderReceipt implements Serializable {
 	private int orderTick; //tick in which the customer ordered the book
 	private int proccesTick; ////tick in which the selling service started processing the order
 
-	//Constructor
-	public OrderReceipt(int orderId, String seller, int customerId, String bookTitle, int price){
-		this.orderId = orderId;
-		this.seller = seller;
-		this.customerId = customerId;
-		this.bookTitle = bookTitle;
-		this.price = price;
-	}
-
 	public OrderReceipt(){}
 	/**
      * Retrieves the orderId of this receipt.

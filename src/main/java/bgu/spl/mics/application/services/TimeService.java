@@ -64,18 +64,16 @@ public class TimeService extends MicroService{
         });
 	}
 
+	//Getters
 	public int getSpeed() {
 		return speed;
 	}
-
 	public int getDuration() {
 		return duration;
 	}
-
 	public static int getCurrentTick() {
 		return currentTick;
 	}
-
 	public Timer getSystemTimer() {
 		return SystemTimer;
 	}

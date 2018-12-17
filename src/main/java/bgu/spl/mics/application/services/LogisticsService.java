@@ -42,6 +42,7 @@ public class LogisticsService extends MicroService {
 				complete(message, true);
 			}
 		});
+
 		//Subscribing to know when time ends
 		subscribeBroadcast(TerminateBroadcast.class, message -> {
 			terminate();

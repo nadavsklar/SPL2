@@ -100,7 +100,4 @@ public class Inventory {
 		Printer.SerializablePrinter(amountsInInventory, filename);
     }
 
-    public int getAmount(String book) {
-	    return this.amountsInInventory.get(book);
-    }
 }
